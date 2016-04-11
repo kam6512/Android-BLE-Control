@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/device_item_card"
+    style="@style/DeviceItemCard"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@null"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:divider="?android:attr/dividerHorizontal"
+        android:padding="10dp"
+        android:showDividers="middle">
+
+        <TableRow style="@style/DeviceItemTableRow">
+
+            <TextView
+                style="@style/DeviceItemLabel"
+                android:text="@string/profile.label.name"
+                android:textColor="@color/text_dark"/>
+
+            <TextView
+                android:id="@+id/item_name"
+                style="@style/DeviceItemLabel.DeviceItemText"
+                android:textColor="@color/text_dark"/>
+        </TableRow>
+
+        <TableRow style="@style/DeviceItemTableRow">
+
+            <TextView
+                style="@style/DeviceItemLabel"
+                android:text="@string/profile.label.address"
+                android:textColor="@color/text_dark"/>
+
+            <TextView
+                android:id="@+id/item_address"
+                style="@style/DeviceItemLabel.DeviceItemText"
+                android:textColor="@color/text_dark"/>
+
+        </TableRow>
+
+        <LinearLayout
+            android:id="@+id/row_expand"
+            android:divider="?android:attr/dividerHorizontal"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <TableRow
+                android:id="@+id/row_bond"
+                style="@style/DeviceItemTableRow">
+
+                <TextView
+                    style="@style/DeviceItemLabel"
+                    android:text="@string/profile.label.bondState"/>
+
+                <TextView
+                    android:id="@+id/item_bond"
+                    style="@style/DeviceItemLabel.DeviceItemText"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/row_type"
+                style="@style/DeviceItemTableRow">
+
+                <TextView
+                    style="@style/DeviceItemLabel"
+                    android:text="@string/profile.label.type"/>
+
+                <TextView
+                    android:id="@+id/item_type"
+                    style="@style/DeviceItemLabel.DeviceItemText"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/row_rssi"
+                style="@style/DeviceItemTableRow">
+
+                <TextView
+                    style="@style/DeviceItemLabel"
+                    android:text="@string/profile.label.rssi"/>
+
+                <TextView
+                    android:id="@+id/item_rssi"
+                    style="@style/DeviceItemLabel.DeviceItemText"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
+            </TableRow>
+        </LinearLayout>
+    </TableLayout>
+
+    <ImageView
+        android:id="@+id/button_expand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:layout_margin="7dp"
+        android:background="@null"/>
+</android.support.v7.widget.CardView>

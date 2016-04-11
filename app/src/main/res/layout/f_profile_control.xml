@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    android:id="@+id/profile_characteristic"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="5dp">
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    style="@style/DeviceCharacteristicInfoLabel"
+                    android:text="@string/profile.label.peripheral"/>
+
+                <TextView
+                    android:id="@+id/characteristic_device_name"
+                    style="@style/DeviceCharacteristicInfo.DeviceCharacteristicSubInfo"/>
+
+            </TableRow>
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    style="@style/DeviceCharacteristicInfoLabel.DeviceCharacteristicSubInfoLabel"
+                    android:text="@string/profile.label.address"/>
+
+                <TextView
+                    android:id="@+id/characteristic_device_address"
+                    style="@style/DeviceCharacteristicInfo.DeviceCharacteristicSubInfo"/>
+            </TableRow>
+
+            <TableRow
+                style="@style/DeviceTableRaw">
+                <TextView
+                    style="@style/DeviceCharacteristicInfoLabel"
+                    android:text="@string/profile.label.service"/>
+
+                <TextView
+                    android:id="@+id/characteristic_service_name"
+                    style="@style/DeviceCharacteristicInfo.DeviceCharacteristicSubInfo"/>
+
+            </TableRow>
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    style="@style/DeviceCharacteristicInfoLabel.DeviceCharacteristicSubInfoLabel"
+                    android:text="@string/profile.label.uuid"/>
+
+                <TextView
+                    android:id="@+id/characteristic_service_uuid"
+                    style="@style/DeviceCharacteristicInfo.DeviceCharacteristicSubInfo"/>
+
+            </TableRow>
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    style="@style/DeviceCharacteristicInfoLabel"
+                    android:text="@string/profile.label.characteristic"/>
+
+                <TextView
+                    android:id="@+id/control_name"
+                    style="@style/DeviceCharacteristicInfo.DeviceCharacteristicSubInfo"/>
+
+            </TableRow>
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    style="@style/DeviceCharacteristicInfoLabel.DeviceCharacteristicSubInfoLabel"
+                    android:text="@string/profile.label.uuid"/>
+
+                <TextView
+                    android:id="@+id/control_uuid"
+                    style="@style/DeviceCharacteristicInfo.DeviceCharacteristicSubInfo"/>
+
+            </TableRow>
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    style="@style/DeviceCharacteristicInfoLabel"
+                    android:text="@string/profile.label.type"/>
+
+                <TextView
+                    android:id="@+id/control_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:background="@null"/>
+
+            </TableRow>
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    style="@style/DeviceCharacteristicInfoLabel"
+                    android:text="@string/profile.label.peripheral"/>
+
+                <TextView
+                    android:id="@+id/control_properties"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:background="@null"/>
+
+            </TableRow>
+
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ToggleButton
+                android:id="@+id/control_notification_switcher"
+                style="@style/DeviceCharacteristicButton"
+                android:text="@string/profile.button.toggle"
+                android:textOff="Notification"
+                android:textOn="Notification"/>
+
+            <Button
+                android:id="@+id/control_read_btn"
+                style="@style/DeviceCharacteristicButton"
+                android:text="@string/profile.button.read"/>
+
+            <Button
+                android:id="@+id/control_write_btn"
+                style="@style/DeviceCharacteristicButton"
+                android:text="@string/profile.button.write"/>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/control_hex_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="">
+
+            <requestFocus/>
+        </EditText>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@null">
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@null"
+                    android:text="@string/profile.label.string"
+                    android:textColor="#888"
+                    android:textSize="10sp"/>
+
+                <TextView
+                    android:id="@+id/control_ascii_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="9"
+                    android:background="@null"/>
+
+            </TableRow>
+
+            <TableRow style="@style/DeviceTableRaw">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@null"
+                    android:text="@string/profile.label.updated"
+                    android:textColor="#888"
+                    android:textSize="10sp"/>
+
+                <TextView
+                    android:id="@+id/control_timestamp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="9"
+                    android:background="@null"/>
+
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView style="@style/ProfileItemCard"
+                                    xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    app:cardBackgroundColor="@android:color/holo_blue_dark">
+
+    <LinearLayout
+        style="@style/ProfileItemFrame"
+        android:divider="?android:attr/dividerHorizontal"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/profile_parent_list_item_service_name"
+            style="@style/ProfileItemTextView"
+            android:text="@string/profile.service.name"
+            android:textColor="#fff"
+            android:textSize="20sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/profile_parent_list_item_service_UUID"
+
+                style="@style/ProfileItemTextView"
+                android:layout_gravity="center_vertical|start"
+                android:layout_weight="1"
+                android:text="@string/profile.service.UUID"/>
+
+            <TextView
+                android:id="@+id/profile_parent_list_item_service_type"
+                style="@style/ProfileItemTextView"
+                android:layout_weight="1"
+                android:text="@string/profile.service.type"
+                android:textColor="#eee"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ProfileItemTextView">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_margin">7dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/text_light</item>
+    </style>
+
+    <style name="ProfileItemFrame">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="ProfileItemCard" parent="CardView">
+        <item name="cardCornerRadius">2dp</item>
+        <item name="cardElevation">5dp</item>
+        <item name="cardPreventCornerOverlap">false</item>
+        <item name="contentPadding">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">@dimen/deviceItem_margin</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="DeviceTableRaw">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="DeviceLabel">
+        <item name="android:layout_gravity">end|center_vertical</item>
+        <item name="android:textColor">@color/text_light</item>
+    </style>
+
+    <style name="DeviceLabel.DeviceText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="DeviceItemRecyclerView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="DeviceCharacteristicInfoLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:layout_weight">0</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
+    <style name="DeviceCharacteristicInfoLabel.DeviceCharacteristicSubInfoLabel">
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:layout_marginBottom">@dimen/deviceItem_margin</item>
+    </style>
+
+    <style name="DeviceCharacteristicInfo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">@dimen/deviceItem_margin</item>
+    </style>
+
+    <style name="DeviceCharacteristicInfo.DeviceCharacteristicSubInfo">
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:layout_marginBottom">@dimen/deviceItem_margin</item>
+    </style>
+
+    <style name="DeviceCharacteristicButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+</resources>

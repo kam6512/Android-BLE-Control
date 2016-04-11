@@ -1,0 +1,2 @@
+include ':Manager', ':app'
+project(':Manager').projectDir = new File(settingsDir, '../BLE-Gatt_Manager/Manager')
