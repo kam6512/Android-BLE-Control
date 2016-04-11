@@ -135,7 +135,11 @@ public class DeviceProfileActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        disconnectDevice();
+        if (gattManager.isConnected()) {
+            disconnectDevice();
+        } else {
+            finish();
+        }
     }
 
 
