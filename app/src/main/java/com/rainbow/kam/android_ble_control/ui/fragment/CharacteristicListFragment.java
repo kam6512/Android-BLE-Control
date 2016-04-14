@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.data.adapter.CharacteristicAdapter;
@@ -25,8 +24,6 @@ import hugo.weaving.DebugLog;
 public class CharacteristicListFragment extends Fragment {
 
     private Context context;
-
-    private View view;
 
     private CharacteristicAdapter characteristicAdapter;
 

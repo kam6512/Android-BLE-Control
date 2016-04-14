@@ -25,8 +25,6 @@ import java.util.Objects;
 public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Animation.AnimationListener {
 
 
-    private final Context context;
-
     private final OnDeviceSelectListener onDeviceSelectListener;
 
     private final SortedListAdapterCallback<DeviceItem> sortedListAdapterCallback = new SortedListAdapterCallback<DeviceItem>(this) {
@@ -59,7 +57,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
     public DeviceAdapter(Context context) {
-        this.context = context;
         defaultDeviceName = context.getString(R.string.device_name_def);
         iconColor = ContextCompat.getColor(context, android.R.color.black);
         this.onDeviceSelectListener = (OnDeviceSelectListener) context;
@@ -70,7 +67,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         collapseAnimation = AnimationUtils.loadAnimation(context, R.anim.collapse_device_item);
         collapseAnimation.setAnimationListener(this);
         collapseAnimation.setInterpolator(context, android.R.anim.anticipate_overshoot_interpolator);
-
     }
 
 

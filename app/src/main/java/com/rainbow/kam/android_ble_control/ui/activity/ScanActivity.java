@@ -108,7 +108,7 @@ public class ScanActivity extends AppCompatActivity implements
 
         deviceList.setLayoutManager(new LinearLayoutManager(this));
         deviceList.setHasFixedSize(true);
-        deviceAdapter = new DeviceAdapter(this);
+        deviceAdapter = new DeviceAdapter(getApplicationContext());
         deviceList.setAdapter(deviceAdapter);
     }
 

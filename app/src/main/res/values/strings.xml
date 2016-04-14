@@ -28,7 +28,7 @@
     <string name="bt.disconnected">disconnected</string>
     <string name="bt.on">블루투스 On</string>
     <string name="bt.not.init">블루투스가 시작되지 않았습니다.\n 블루투스를 시작해야 합니다.</string>
-    <string name="bt.fail">기기가 블루투스를 지원하지 않거나 블루투스 장치가 제거되어있습니다.(init Fail)</string>
+    <string name="bluetooth.fail">기기가 블루투스를 지원하지 않습니다</string>
 
     <string name="device.list.nothing">블루루스 BLE 기기가 탐색되지 않았습니다</string>
 
