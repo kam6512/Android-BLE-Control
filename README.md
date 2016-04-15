@@ -6,4 +6,4 @@ app Module Compile with [BLE-Gatt_Manager module](https://github.com/kam6512/BLE
 <br>
 - [Gradle Setting File](https://github.com/kam6512/Android-BLE-Control/blob/master/settings.gradle)
 <br>
-- [Gradle build File](https://github.com/kam6512/Android-BLE-Control/blob/master/app/build.gradle)
+- [Gradle build File](https://github.com/kam6512/Android-BLE-Control/blob/master/app/build.gradle#L52)
