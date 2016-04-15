@@ -1,4 +1,4 @@
-package com.rainbow.kam.android_ble_control.data.adapter;
+package com.rainbow.kam.android_ble_control.ui.adapter;
 
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;

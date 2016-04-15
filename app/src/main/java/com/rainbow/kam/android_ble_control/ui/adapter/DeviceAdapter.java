@@ -1,4 +1,4 @@
-package com.rainbow.kam.android_ble_control.data.adapter;
+package com.rainbow.kam.android_ble_control.ui.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Strings;
 import com.rainbow.kam.android_ble_control.R;
+import com.rainbow.kam.android_ble_control.data.DeviceItem;
 
 import java.util.Objects;
 
