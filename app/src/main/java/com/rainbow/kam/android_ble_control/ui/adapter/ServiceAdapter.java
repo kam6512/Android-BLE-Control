@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 import com.rainbow.kam.android_ble_control.R;
+import com.rainbow.kam.android_ble_control.listener.click.OnServiceItemClickListener;
 import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 
 import java.util.ArrayList;
@@ -98,13 +99,8 @@ public class ServiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         @Override
         public void onClick(View v) {
-            onServiceItemClickListener.onServiceItemClick(getLayoutPosition());
+            onServiceItemClickListener.onItemClick(getLayoutPosition());
         }
 
-    }
-
-
-    public interface OnServiceItemClickListener {
-        void onServiceItemClick(int position);
     }
 }

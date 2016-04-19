@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.google.common.base.Strings;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
+import com.rainbow.kam.android_ble_control.listener.click.OnDeviceSelectListener;
 
 import java.util.Objects;
 
@@ -224,11 +225,5 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 clickExpandIcon();
             }
         }
-    }
-
-    public interface OnDeviceSelectListener {
-        void onDeviceSelect(DeviceItem device);
-
-        void onDeviceUnSelected();
     }
 }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 import com.rainbow.kam.android_ble_control.R;
+import com.rainbow.kam.android_ble_control.listener.click.OnCharacteristicItemClickListener;
 import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 
 import java.util.ArrayList;
@@ -82,7 +83,6 @@ public class CharacteristicAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 
         private void bindViews(BluetoothGattCharacteristic characteristicItem) {
-
             String uuid = characteristicItem.getUuid().toString();
             String name = GattAttributes.resolveCharacteristicName(uuid);
             uuid = uuidLabel + uuid.substring(4, 8);
@@ -93,12 +93,7 @@ public class CharacteristicAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         @Override
         public void onClick(View v) {
-            onCharacteristicItemClickListener.onCharacteristicItemClick(getLayoutPosition());
+            onCharacteristicItemClickListener.onItemClick(getLayoutPosition());
         }
-    }
-
-
-    public interface OnCharacteristicItemClickListener {
-        void onCharacteristicItemClick(int position);
     }
 }
