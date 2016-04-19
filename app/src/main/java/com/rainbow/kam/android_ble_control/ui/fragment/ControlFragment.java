@@ -89,7 +89,7 @@ public class ControlFragment extends Fragment implements View.OnClickListener, C
     public void onPause() {
         super.onPause();
         notificationEnabled = false;
-        onControlListener.setNotification(notificationEnabled);
+        onControlListener.setNotification(false);
     }
 
 
@@ -135,21 +135,23 @@ public class ControlFragment extends Fragment implements View.OnClickListener, C
             StringBuilder propertiesString = new StringBuilder();
             propertiesString.append(String.format("0x%04X [ ", props));
             if ((props & BluetoothGattCharacteristic.PROPERTY_READ) != 0) {
-                propertiesString.append("read ");
+                propertiesString.append("READ ");
             }
             if ((props & BluetoothGattCharacteristic.PROPERTY_WRITE) != 0) {
-                propertiesString.append("write ");
+                propertiesString.append("WRITE ");
             }
             if ((props & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
-                propertiesString.append("notify ");
+                propertiesString.append("NOTIFY ");
             }
             if ((props & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0) {
-                propertiesString.append("indicate ");
+                propertiesString.append("INDICATE ");
             }
             if ((props & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0) {
-                propertiesString.append("write_no_response ");
+                propertiesString.append("WRITE_NO_RESPONSE ");
             }
-            charProperties.setText(propertiesString + "]");
+            propertiesString.append(propertiesString).append("]");
+
+            charProperties.setText(propertiesString.toString());
 
             notificationBtn.setEnabled((props & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0);
             notificationBtn.setChecked(notificationEnabled);
@@ -240,7 +242,7 @@ public class ControlFragment extends Fragment implements View.OnClickListener, C
                     }
 
                 } else {
-                    Snackbar.make(v, "dataToWrite value is empty!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(v, "value is empty!", Snackbar.LENGTH_SHORT).show();
                 }
                 break;
         }

@@ -11,9 +11,9 @@ import android.support.v7.widget.RecyclerView;
 
 import com.github.pwittchen.reactivebeacons.library.ReactiveBeacons;
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.android_ble_control.data.adapter.DeviceAdapter;
-import com.rainbow.kam.android_ble_control.data.adapter.DeviceAdapter.OnDeviceSelectListener;
-import com.rainbow.kam.android_ble_control.data.adapter.DeviceItem;
+import com.rainbow.kam.android_ble_control.ui.adapter.DeviceAdapter;
+import com.rainbow.kam.android_ble_control.ui.adapter.DeviceAdapter.OnDeviceSelectListener;
+import com.rainbow.kam.android_ble_control.ui.adapter.DeviceItem;
 import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
 
 import org.androidannotations.annotations.AfterViews;

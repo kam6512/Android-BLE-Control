@@ -19,8 +19,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.android_ble_control.data.adapter.CharacteristicAdapter;
-import com.rainbow.kam.android_ble_control.data.adapter.ServiceAdapter;
+import com.rainbow.kam.android_ble_control.ui.adapter.CharacteristicAdapter;
+import com.rainbow.kam.android_ble_control.ui.adapter.ServiceAdapter;
 import com.rainbow.kam.android_ble_control.ui.fragment.CharacteristicListFragment;
 import com.rainbow.kam.android_ble_control.ui.fragment.CharacteristicListFragment_;
 import com.rainbow.kam.android_ble_control.ui.fragment.ControlFragment;

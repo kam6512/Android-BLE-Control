@@ -7,7 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.android_ble_control.data.adapter.ServiceAdapter;
+import com.rainbow.kam.android_ble_control.ui.adapter.ServiceAdapter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;

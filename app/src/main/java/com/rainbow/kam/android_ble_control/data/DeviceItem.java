@@ -1,4 +1,4 @@
-package com.rainbow.kam.android_ble_control.data.adapter;
+package com.rainbow.kam.android_ble_control.data;
 
 import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
@@ -14,10 +14,10 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
     private final String extraAddress;
     private final int extraBondState;
     private final int extraType;
-    private int extraRssi;
+    private final int extraRssi;
 
-    private SparseArray<String> bondList = GattAttributes.BOND_LIST;
-    private SparseArray<String> typeList = GattAttributes.TYPE_LIST;
+    private static final SparseArray<String> bondList = GattAttributes.getBondList();
+    private static final SparseArray<String> typeList = GattAttributes.getTypeList();
 
 
     public DeviceItem(BluetoothDevice bluetoothDevice, int rssi) {
@@ -51,11 +51,6 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
 
     public int getExtraRssi() {
         return this.extraRssi;
-    }
-
-
-    public void setExtraRssi(int rssi) {
-        this.extraRssi = rssi;
     }
 
 
