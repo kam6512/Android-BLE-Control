@@ -2,7 +2,6 @@ package com.rainbow.kam.android_ble_control.data;
 
 import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 
 import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 
@@ -16,9 +15,6 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
     private final int extraType;
     private final int extraRssi;
 
-    private static final SparseArray<String> bondList = GattAttributes.getBondList();
-    private static final SparseArray<String> typeList = GattAttributes.getTypeList();
-
 
     public DeviceItem(BluetoothDevice bluetoothDevice, int rssi) {
         this.extraName = bluetoothDevice.getName();
@@ -29,27 +25,27 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
     }
 
 
-    public String getExtraName() {
+    public final String getExtraName() {
         return this.extraName;
     }
 
 
-    public String getExtraAddress() {
+    public final String getExtraAddress() {
         return this.extraAddress;
     }
 
 
-    public String getExtraBondState() {
-        return bondList.get(extraBondState, bondList.get(bondList.keyAt(0)));
+    public final String getExtraBondState() {
+        return GattAttributes.getBond(extraBondState);
     }
 
 
-    public String getExtraType() {
-        return typeList.get(extraType, typeList.get(typeList.keyAt(0)));
+    public final String getExtraType() {
+        return GattAttributes.getType(extraType);
     }
 
 
-    public int getExtraRssi() {
+    public final int getExtraRssi() {
         return this.extraRssi;
     }
 
@@ -65,9 +61,12 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
 
 
     @Override public String toString() {
-        return "Device{" +
-                "extraName='" + this.extraName + '\'' +
-                ", extraAddress='" + this.extraAddress + '\'' +
+        return "DeviceItem{" +
+                "extraName='" + extraName + '\'' +
+                ", extraAddress='" + extraAddress + '\'' +
+                ", extraBondState=" + extraBondState +
+                ", extraType=" + extraType +
+                ", extraRssi=" + extraRssi +
                 '}';
     }
 

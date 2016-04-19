@@ -11,9 +11,9 @@ import android.support.v7.widget.RecyclerView;
 
 import com.github.pwittchen.reactivebeacons.library.ReactiveBeacons;
 import com.rainbow.kam.android_ble_control.R;
+import com.rainbow.kam.android_ble_control.data.DeviceItem;
+import com.rainbow.kam.android_ble_control.listener.click.OnDeviceSelectListener;
 import com.rainbow.kam.android_ble_control.ui.adapter.DeviceAdapter;
-import com.rainbow.kam.android_ble_control.ui.adapter.DeviceAdapter.OnDeviceSelectListener;
-import com.rainbow.kam.android_ble_control.ui.adapter.DeviceItem;
 import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
 
 import org.androidannotations.annotations.AfterViews;
@@ -42,7 +42,7 @@ public class ScanActivity extends AppCompatActivity implements
 
     @StringRes(R.string.device_name_def) String defaultDeviceName;
 
-    @ViewById(R.id.scan_root) SwipeRefreshLayout refreshLayout;
+    @ViewById(R.id.scan_root) SwipeRefreshLayout refreshScanLayout;
     @ViewById(R.id.device_list) RecyclerView deviceList;
 
     private DeviceAdapter deviceAdapter;
@@ -89,7 +89,7 @@ public class ScanActivity extends AppCompatActivity implements
         }
         startScan();
         deviceAdapter.clear();
-        refreshLayout.setRefreshing(false);
+        refreshScanLayout.setRefreshing(false);
     }
 
 
@@ -104,7 +104,7 @@ public class ScanActivity extends AppCompatActivity implements
 
 
     @AfterViews void setViews() {
-        refreshLayout.setOnRefreshListener(this);
+        refreshScanLayout.setOnRefreshListener(this);
 
         deviceList.setLayoutManager(new LinearLayoutManager(this));
         deviceList.setHasFixedSize(true);
@@ -119,10 +119,10 @@ public class ScanActivity extends AppCompatActivity implements
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(beacon1 -> {
-                    String name = beacon1.device.getName();
-                    if (name == null) {
-                        name = defaultDeviceName;
-                    }
+//                    String name = beacon1.device.getName();
+//                    if (name == null) {
+//                        name = defaultDeviceName;
+//                    }
                     return new DeviceItem(beacon1.device, beacon1.rssi);
                 })
                 .subscribe(device -> {
@@ -141,7 +141,7 @@ public class ScanActivity extends AppCompatActivity implements
 
     private boolean canObserveBeacons() {
         if (!reactiveBeacons.isBleSupported()) {
-            Snackbar.make(refreshLayout, R.string.bluetooth_fail, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(refreshScanLayout, R.string.bluetooth_fail, Snackbar.LENGTH_SHORT).show();
             return false;
         }
 

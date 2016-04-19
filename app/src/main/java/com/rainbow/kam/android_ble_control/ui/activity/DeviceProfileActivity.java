@@ -19,14 +19,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.android_ble_control.ui.adapter.CharacteristicAdapter;
-import com.rainbow.kam.android_ble_control.ui.adapter.ServiceAdapter;
+import com.rainbow.kam.android_ble_control.listener.click.OnCharacteristicItemClickListener;
+import com.rainbow.kam.android_ble_control.listener.click.OnServiceItemClickListener;
 import com.rainbow.kam.android_ble_control.ui.fragment.CharacteristicListFragment;
-import com.rainbow.kam.android_ble_control.ui.fragment.CharacteristicListFragment_;
 import com.rainbow.kam.android_ble_control.ui.fragment.ControlFragment;
-import com.rainbow.kam.android_ble_control.ui.fragment.ControlFragment_;
 import com.rainbow.kam.android_ble_control.ui.fragment.ServiceListFragment;
-import com.rainbow.kam.android_ble_control.ui.fragment.ServiceListFragment_;
 import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
 import com.rainbow.kam.ble_gatt_manager.GattCustomCallbacks;
 import com.rainbow.kam.ble_gatt_manager.GattManager;
@@ -48,8 +45,8 @@ import java.util.List;
 public class DeviceProfileActivity extends AppCompatActivity implements
         ServiceListFragment.OnServiceReadyListener,
         CharacteristicListFragment.OnCharacteristicReadyListener,
-        ServiceAdapter.OnServiceItemClickListener,
-        CharacteristicAdapter.OnCharacteristicItemClickListener,
+        OnServiceItemClickListener,
+        OnCharacteristicItemClickListener,
         ControlFragment.OnControlListener,
         GattCustomCallbacks {
 
@@ -76,9 +73,9 @@ public class DeviceProfileActivity extends AppCompatActivity implements
 
     private FragmentManager fragmentManager;
 
-    private ServiceListFragment_ serviceListFragment;
-    private CharacteristicListFragment_ characteristicListFragment;
-    private ControlFragment_ controlFragment;
+    private ServiceListFragment serviceListFragment;
+    private CharacteristicListFragment characteristicListFragment;
+    private ControlFragment controlFragment;
 
     private static final String TAG_SERVICE_FRAGMENT = "SERVICE";
     private static final String TAG_CHARACTERISTIC_FRAGMENT = "CHARACTERISTIC";
@@ -121,21 +118,11 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     private void setFragments() {
         fragmentManager = getSupportFragmentManager();
 
-        serviceListFragment = new ServiceListFragment_();
-        characteristicListFragment = new CharacteristicListFragment_();
-        controlFragment = new ControlFragment_();
+        serviceListFragment = new ServiceListFragment();
+        characteristicListFragment = new CharacteristicListFragment();
+        controlFragment = new ControlFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.profile_fragment_view, serviceListFragment).commit();
-    }
-
-
-    private void registerBluetooth() {
-        gattManager = new GattManager(getApplication(), this);
-        if (gattManager.isBluetoothAvailable()) {
-            connectDevice();
-        } else {
-            BluetoothHelper.requestBluetoothEnable(this);
-        }
     }
 
 
@@ -164,7 +151,12 @@ public class DeviceProfileActivity extends AppCompatActivity implements
 
     @Override protected void onResume() {
         super.onResume();
-        registerBluetooth();
+        gattManager = new GattManager(getApplication(), this);
+        if (gattManager.isBluetoothAvailable()) {
+            connectDevice();
+        } else {
+            BluetoothHelper.requestBluetoothEnable(this);
+        }
     }
 
 
@@ -187,13 +179,15 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     }
 
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         BluetoothHelper.onRequestEnableResult(requestCode, resultCode, this);
     }
 
 
-    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                                     @NonNull int[] grantResults) {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         BluetoothHelper.onRequestPermissionsResult(requestCode, grantResults, this);
     }
 
@@ -231,7 +225,8 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     }
 
 
-    @UiThread @Override public void onServicesFound(BluetoothGatt bluetoothGatt) {
+    @UiThread @Override
+    public void onServicesFound(BluetoothGatt bluetoothGatt) {
         bluetoothGattServices = bluetoothGatt.getServices();
         onServiceReady();
     }
@@ -247,7 +242,8 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     }
 
 
-    @UiThread @Override public void onReadSuccess(final BluetoothGattCharacteristic ch) {
+    @UiThread @Override
+    public void onReadSuccess(final BluetoothGattCharacteristic ch) {
         controlFragment.newValueForCharacteristic(ch);
     }
 
@@ -258,7 +254,8 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     }
 
 
-    @UiThread @Override public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
+    @UiThread @Override
+    public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
         controlFragment.newValueForCharacteristic(ch);
     }
 
