@@ -5,14 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.github.pwittchen.reactivebeacons.library.ReactiveBeacons;
 import com.rainbow.kam.android_ble_control.R;
+import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
-import com.rainbow.kam.android_ble_control.listener.click.OnDeviceSelectListener;
 import com.rainbow.kam.android_ble_control.ui.adapter.DeviceAdapter;
 import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
 
@@ -23,6 +22,8 @@ import org.androidannotations.annotations.res.StringRes;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -32,10 +33,9 @@ import rx.schedulers.Schedulers;
  * Created by kam6512 on 2016-04-08.
  */
 @EActivity(R.layout.a_scan)
-public class ScanActivity extends AppCompatActivity implements
+public class ScanActivity extends BaseActivity implements
         SwipeRefreshLayout.OnRefreshListener,
-        OnDeviceSelectListener {
-
+        DeviceAdapter.OnDeviceSelectListener {
 
     public static final String KEY_DEVICE_NAME = "BLE_DEVICE_NAME";
     public static final String KEY_DEVICE_ADDRESS = "BLE_DEVICE_ADDRESS";
@@ -45,11 +45,16 @@ public class ScanActivity extends AppCompatActivity implements
     @ViewById(R.id.scan_root) SwipeRefreshLayout refreshScanLayout;
     @ViewById(R.id.device_list) RecyclerView deviceList;
 
-    private DeviceAdapter deviceAdapter;
+    @Inject DeviceAdapter deviceAdapter;
 
     private ReactiveBeacons reactiveBeacons;
 
     private Subscription beaconSubscription;
+
+
+    @Override protected void injectComponent(ActivityComponent component) {
+        component.inject(this);
+    }
 
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +73,16 @@ public class ScanActivity extends AppCompatActivity implements
 
     @Override protected void onPause() {
         super.onPause();
+        if (beaconSubscription != null && !beaconSubscription.isUnsubscribed()) {
+            beaconSubscription.unsubscribe();
+        }
+        deviceAdapter.clear();
         stopScan();
     }
 
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         BluetoothHelper.onRequestEnableResult(requestCode, resultCode, this);
     }
 
@@ -87,9 +97,8 @@ public class ScanActivity extends AppCompatActivity implements
         if (!beaconSubscription.isUnsubscribed()) {
             beaconSubscription.unsubscribe();
         }
-        startScan();
         deviceAdapter.clear();
-        refreshScanLayout.setRefreshing(false);
+        startScan();
     }
 
 
@@ -98,17 +107,10 @@ public class ScanActivity extends AppCompatActivity implements
     }
 
 
-    @Override public void onDeviceUnSelected() {
-        finish();
-    }
-
-
     @AfterViews void setViews() {
         refreshScanLayout.setOnRefreshListener(this);
-
         deviceList.setLayoutManager(new LinearLayoutManager(this));
         deviceList.setHasFixedSize(true);
-        deviceAdapter = new DeviceAdapter(getApplicationContext());
         deviceList.setAdapter(deviceAdapter);
     }
 
@@ -118,24 +120,21 @@ public class ScanActivity extends AppCompatActivity implements
                 .take(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnUnsubscribe(() -> refreshScanLayout.setRefreshing(false))
                 .map(beacon1 -> {
-//                    String name = beacon1.device.getName();
-//                    if (name == null) {
-//                        name = defaultDeviceName;
-//                    }
+                    String name = beacon1.device.getName();
+                    if (name == null) {
+                        name = defaultDeviceName;
+                    }
                     return new DeviceItem(beacon1.device, beacon1.rssi);
                 })
-                .subscribe(device -> {
-                    deviceAdapter.addDevice(device);
-                });
+                .subscribe(deviceAdapter::addDevice);
+
     }
 
 
     private void stopScan() {
-        if (beaconSubscription != null && !beaconSubscription.isUnsubscribed()) {
-            beaconSubscription.unsubscribe();
-        }
-        deviceAdapter.clear();
+        refreshScanLayout.setRefreshing(false);
     }
 
 
@@ -162,7 +161,7 @@ public class ScanActivity extends AppCompatActivity implements
                     commandIntent.putExtra(KEY_DEVICE_ADDRESS, device.getExtraAddress());
                     return commandIntent;
                 })
-                .subscribe(this::startActivity).unsubscribe();
+                .subscribe(this::startActivity)
+                .unsubscribe();
     }
-
 }

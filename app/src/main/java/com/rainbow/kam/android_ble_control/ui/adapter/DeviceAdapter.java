@@ -1,6 +1,7 @@
 package com.rainbow.kam.android_ble_control.ui.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
@@ -17,15 +18,15 @@ import android.widget.TextView;
 import com.google.common.base.Strings;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
-import com.rainbow.kam.android_ble_control.listener.click.OnDeviceSelectListener;
 
 import java.util.Objects;
+
+import javax.inject.Inject;
 
 /**
  * Created by Kam6512 on 2015-10-14.
  */
 public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Animation.AnimationListener {
-
 
     private final OnDeviceSelectListener onDeviceSelectListener;
 
@@ -58,7 +59,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final int iconColor;
 
 
-    public DeviceAdapter(Context context) {
+    @Inject public DeviceAdapter(@NonNull Context context) {
         defaultDeviceName = context.getString(R.string.device_name_def);
         iconColor = ContextCompat.getColor(context, android.R.color.black);
         this.onDeviceSelectListener = (OnDeviceSelectListener) context;
@@ -72,8 +73,8 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @Override @NonNull
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View root = layoutInflater.inflate(R.layout.i_bluetooth_device, parent, false);
         return new DeviceViewHolder(root);
@@ -81,7 +82,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         DeviceViewHolder deviceViewHolder = (DeviceViewHolder) holder;
         deviceViewHolder.bindViews(sortedList.get(position));
     }
@@ -93,7 +94,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-    public void addDevice(final DeviceItem deviceItem) {
+    public void addDevice(@NonNull final DeviceItem deviceItem) {
         sortedList.add(deviceItem);
     }
 
@@ -103,13 +104,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-    public void cancel() {
-        onDeviceSelectListener.onDeviceUnSelected();
-    }
-
-
-    @Override
-    public void onAnimationStart(Animation animation) {
+    @Override public void onAnimationStart(@NonNull Animation animation) {
         animateDeviceViewHolder.itemView.requestLayout();
         if (animation == expandAnimation) {
             animateDeviceViewHolder.expandGroup.setVisibility(View.VISIBLE);
@@ -119,8 +114,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-    @Override
-    public void onAnimationEnd(Animation animation) {
+    @Override public void onAnimationEnd(@NonNull Animation animation) {
         animateDeviceViewHolder.itemView.requestLayout();
         if (animation == collapseAnimation) {
             animateDeviceViewHolder.expandGroup.setVisibility(View.GONE);
@@ -129,8 +123,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-    @Override
-    public void onAnimationRepeat(Animation animation) {
+    @Override public void onAnimationRepeat(Animation animation) {
     }
 
 
@@ -150,7 +143,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private ImageView expendImageView;
 
 
-        public DeviceViewHolder(final View itemView) {
+        public DeviceViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             this.itemView = itemView;
@@ -169,7 +162,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
 
-        private void bindViews(DeviceItem deviceItem) {
+        private void bindViews(@NonNull DeviceItem deviceItem) {
             this.deviceItem = deviceItem;
             String deviceName = this.deviceItem.getExtraName();
             if (Strings.isNullOrEmpty(deviceName)) {
@@ -184,8 +177,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             expandGroup.setVisibility(View.GONE);
 
             expendImageView.setImageResource(R.drawable.ic_expand_more_white_36dp);
-
-
         }
 
 
@@ -204,14 +195,14 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
 
-        void expandView() {
+        private void expandView() {
             expandAnimation.reset();
             expandGroup.clearAnimation();
             expandGroup.startAnimation(expandAnimation);
         }
 
 
-        void collapsedView() {
+        private void collapsedView() {
             collapseAnimation.reset();
             expandGroup.clearAnimation();
             expandGroup.startAnimation(collapseAnimation);
@@ -225,5 +216,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 clickExpandIcon();
             }
         }
+    }
+
+    public interface OnDeviceSelectListener {
+        void onDeviceSelect(DeviceItem device);
     }
 }
