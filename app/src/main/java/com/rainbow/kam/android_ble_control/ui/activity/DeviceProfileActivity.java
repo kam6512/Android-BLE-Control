@@ -4,26 +4,22 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.android_ble_control.listener.click.OnCharacteristicItemClickListener;
-import com.rainbow.kam.android_ble_control.listener.click.OnServiceItemClickListener;
-import com.rainbow.kam.android_ble_control.ui.fragment.CharacteristicListFragment;
-import com.rainbow.kam.android_ble_control.ui.fragment.ControlFragment;
-import com.rainbow.kam.android_ble_control.ui.fragment.ServiceListFragment;
+import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
+import com.rainbow.kam.android_ble_control.ui.adapter.ProfileAdapter;
+import com.rainbow.kam.android_ble_control.ui.view.ControlView;
 import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
 import com.rainbow.kam.ble_gatt_manager.GattCustomCallbacks;
 import com.rainbow.kam.ble_gatt_manager.GattManager;
@@ -37,17 +33,16 @@ import org.androidannotations.annotations.res.StringRes;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by kam6512 on 2015-11-27.
  */
 @EActivity(R.layout.a_profile)
-public class DeviceProfileActivity extends AppCompatActivity implements
-        ServiceListFragment.OnServiceReadyListener,
-        CharacteristicListFragment.OnCharacteristicReadyListener,
-        OnServiceItemClickListener,
-        OnCharacteristicItemClickListener,
-        ControlFragment.OnControlListener,
+public class DeviceProfileActivity extends BaseActivity implements
+        ProfileAdapter.OnGattItemClickListener,
+        ControlView.OnControlListener,
         GattCustomCallbacks {
 
     private final String TAG = getClass().getSimpleName();
@@ -71,15 +66,11 @@ public class DeviceProfileActivity extends AppCompatActivity implements
 
     @ViewById(R.id.profile_state) TextView deviceStateTextView;
 
-    private FragmentManager fragmentManager;
+    @ViewById(R.id.profile_recyclerView) RecyclerView recyclerView;
 
-    private ServiceListFragment serviceListFragment;
-    private CharacteristicListFragment characteristicListFragment;
-    private ControlFragment controlFragment;
+    @ViewById(R.id.profile_control) ControlView controlView;
 
-    private static final String TAG_SERVICE_FRAGMENT = "SERVICE";
-    private static final String TAG_CHARACTERISTIC_FRAGMENT = "CHARACTERISTIC";
-    private static final String TAG_CONTROL_FRAGMENT = "CONTROL";
+    @Inject ProfileAdapter profileAdapter;
 
     private GattManager gattManager;
 
@@ -88,48 +79,38 @@ public class DeviceProfileActivity extends AppCompatActivity implements
 
     private BluetoothGattCharacteristic controlCharacteristic;
 
-    private final Runnable deviceDisconnect = () -> {
-        deviceStateTextView.setText(disconnectedLabel);
-        new Handler().postDelayed(DeviceProfileActivity.this::finish, 500);
-    };
 
-
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setFragments();
+    @Override protected void injectComponent(ActivityComponent component) {
+        component.inject(this);
     }
 
 
     @AfterViews void setToolbar() {
-        deviceNameTextView.setText(deviceName);
-        deviceAddressTextView.setText(deviceAddress);
-        deviceRSSI = "-" + RSSI_UNIT;
-        deviceRSSITextView.setText(deviceRSSI);
-
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(deviceName);
         }
+        deviceNameTextView.setText(deviceName);
+        deviceAddressTextView.setText(deviceAddress);
+        deviceRSSI = RSSI_UNIT;
+        deviceRSSITextView.setText(deviceRSSI);
+
     }
 
 
-    private void setFragments() {
-        fragmentManager = getSupportFragmentManager();
-
-        serviceListFragment = new ServiceListFragment();
-        characteristicListFragment = new CharacteristicListFragment();
-        controlFragment = new ControlFragment();
-        fragmentManager.beginTransaction()
-                .replace(R.id.profile_fragment_view, serviceListFragment).commit();
+    @AfterViews void setRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(profileAdapter);
     }
 
 
-    private synchronized void connectDevice() {
-        deviceStateTextView.setText(connectingLabel);
+    private void connectDevice() {
         try {
             gattManager.connect(deviceAddress);
+            deviceStateTextView.setText(connectingLabel);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
             deviceNameTextView.setText(e.getMessage());
@@ -140,11 +121,12 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     }
 
 
-    private synchronized void disconnectDevice() {
+    private void disconnectDevice() {
         if (gattManager != null && gattManager.isBluetoothAvailable()) {
             gattManager.disconnect();
         } else {
-            runOnUiThread(deviceDisconnect);
+            deviceStateTextView.setText(disconnectedLabel);
+            finish();
         }
     }
 
@@ -194,14 +176,24 @@ public class DeviceProfileActivity extends AppCompatActivity implements
 
     @Override public void onBackPressed() {
         if (gattManager.isConnected()) {
-            if (serviceListFragment.isVisible()) {
-                disconnectDevice();
+            if (controlView.getVisibility() == View.VISIBLE) {
+                controlView.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
             } else {
-                super.onBackPressed();
+                if (profileAdapter.isBackPressedAvailable()) {
+                    disconnectDevice();
+                } else {
+                    showServiceList();
+                }
             }
         } else {
             finish();
         }
+    }
+
+
+    @UiThread void showExceptionMessage(String msg) {
+        Snackbar.make(rootLayout, msg, Snackbar.LENGTH_LONG).show();
     }
 
 
@@ -216,7 +208,8 @@ public class DeviceProfileActivity extends AppCompatActivity implements
 
 
     @UiThread @Override public void onDeviceDisconnected() {
-        deviceDisconnect.run();
+        deviceStateTextView.setText(disconnectedLabel);
+        finish();
     }
 
 
@@ -225,10 +218,9 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     }
 
 
-    @UiThread @Override
-    public void onServicesFound(BluetoothGatt bluetoothGatt) {
+    @Override public void onServicesFound(BluetoothGatt bluetoothGatt) {
         bluetoothGattServices = bluetoothGatt.getServices();
-        onServiceReady();
+        showServiceList();
     }
 
 
@@ -242,21 +234,19 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     }
 
 
-    @UiThread @Override
-    public void onReadSuccess(final BluetoothGattCharacteristic ch) {
-        controlFragment.newValueForCharacteristic(ch);
+    @Override public void onReadSuccess(final BluetoothGattCharacteristic ch) {
+        controlView.newValueForCharacteristic(ch);
     }
 
 
-    @UiThread @Override public void onReadFail(Exception e) {
-        controlFragment.setFail();
+    @Override public void onReadFail(Exception e) {
+        controlView.setFail();
         showExceptionMessage(e.getMessage());
     }
 
 
-    @UiThread @Override
-    public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
-        controlFragment.newValueForCharacteristic(ch);
+    @Override public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
+        controlView.newValueForCharacteristic(ch);
     }
 
 
@@ -286,48 +276,36 @@ public class DeviceProfileActivity extends AppCompatActivity implements
     }
 
 
-    @UiThread void showExceptionMessage(String msg) {
-        Snackbar.make(rootLayout, msg, Snackbar.LENGTH_LONG).show();
-    }
-
-
     @Override public void onRSSIMiss() {
         Snackbar.make(rootLayout, "onRSSIMiss", Snackbar.LENGTH_LONG).show();
     }
 
 
-    @Override public void onServiceItemClick(int position) {
-        fragmentManager.beginTransaction().addToBackStack(TAG_CHARACTERISTIC_FRAGMENT).replace(R.id.profile_fragment_view, characteristicListFragment).commit();
+    @Override public void onServiceClickListener(int position) {
         bluetoothGattCharacteristics = bluetoothGattServices.get(position).getCharacteristics();
-        onCharacteristicReady();
-
+        showCharacteristicList();
     }
 
 
-    @Override public void onCharacteristicItemClick(int position) {
-        fragmentManager.beginTransaction().addToBackStack(TAG_CONTROL_FRAGMENT).replace(R.id.profile_fragment_view, controlFragment).commit();
-        if (!bluetoothGattCharacteristics.get(position).equals(controlCharacteristic)) {
-            controlCharacteristic = bluetoothGattCharacteristics.get(position);
-        }
+    @Override public void onCharacteristicClickListener(int position) {
+        controlCharacteristic = bluetoothGattCharacteristics.get(position);
+        controlView.setVisibility(View.VISIBLE);
     }
 
 
-    @Override public void onServiceReady() {
-        if (serviceListFragment.isVisible() && bluetoothGattServices != null) {
-            runOnUiThread(() -> serviceListFragment.setServiceList(bluetoothGattServices));
-        }
+    @UiThread void showServiceList() {
+        profileAdapter.setServiceList(bluetoothGattServices);
     }
 
 
-    @Override public void onCharacteristicReady() {
-        if (characteristicListFragment.isVisible() && bluetoothGattServices != null) {
-            runOnUiThread(() -> characteristicListFragment.setCharacteristicList(bluetoothGattCharacteristics));
-        }
+    @UiThread void showCharacteristicList() {
+        profileAdapter.setCharacteristicList(bluetoothGattCharacteristics);
     }
 
 
     @Override public void onControlReady() {
-        controlFragment.init(deviceName, deviceAddress, controlCharacteristic);
+        recyclerView.setVisibility(View.GONE);
+        controlView.init(deviceName, deviceAddress, controlCharacteristic);
     }
 
 

@@ -1,10 +1,12 @@
-package com.rainbow.kam.android_ble_control.ui.fragment;
+package com.rainbow.kam.android_ble_control.ui.view;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -12,11 +14,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 import com.rainbow.kam.android_ble_control.R;
+import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 
@@ -29,8 +32,8 @@ import java.util.Objects;
 /**
  * Created by kam6512 on 2015-11-02.
  */
-@EFragment(R.layout.f_profile_control)
-public class ControlFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+@EViewGroup(R.layout.v_profile_control)
+public class ControlView extends NestedScrollView implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
 
     @ViewById(R.id.characteristic_device_name) TextView deviceName;
@@ -68,33 +71,40 @@ public class ControlFragment extends Fragment implements View.OnClickListener, C
     private String lastUpdateTime;
     private boolean notificationEnabled;
 
-    private OnControlListener onControlListener;
+    private final OnControlListener onControlListener;
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public ControlView(Context context) {
+        super(context);
+        onControlListener = (OnControlListener) context;
+    }
+
+
+    public ControlView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        onControlListener = (OnControlListener) context;
+    }
+
+
+    public ControlView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         onControlListener = (OnControlListener) context;
     }
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        onControlListener.onControlReady();
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        notificationEnabled = false;
-        onControlListener.setNotification(false);
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == VISIBLE) {
+            onControlListener.onControlReady();
+        } else {
+            notificationEnabled = false;
+//            onControlListener.setNotification(false);
+        }
     }
 
 
     @AfterViews void setBtn() {
-
         readBtn.setOnClickListener(this);
         writeBtn.setOnClickListener(this);
         notificationBtn.setOnCheckedChangeListener(this);
@@ -117,8 +127,8 @@ public class ControlFragment extends Fragment implements View.OnClickListener, C
     }
 
 
-    private void initViewValue() {
-        if (isVisible()) {
+    @UiThread void initViewValue() {
+        if (getVisibility() == VISIBLE) {
             deviceName.setText(name);
             deviceAddress.setText(address);
 
@@ -163,6 +173,7 @@ public class ControlFragment extends Fragment implements View.OnClickListener, C
     }
 
 
+    @UiThread
     public void newValueForCharacteristic(final BluetoothGattCharacteristic bluetoothGattCharacteristic) {
 
         byte[] rawValue = bluetoothGattCharacteristic.getValue();
@@ -208,8 +219,8 @@ public class ControlFragment extends Fragment implements View.OnClickListener, C
     }
 
 
-    private void bindView() {
-        if (isVisible()) {
+    @UiThread void bindView() {
+        if (getVisibility() == VISIBLE) {
             charHexValue.setText(hexValue);
             charStrValue.setText(strValue);
             charDateValue.setText(lastUpdateTime);
