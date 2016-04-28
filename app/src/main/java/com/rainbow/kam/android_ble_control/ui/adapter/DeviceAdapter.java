@@ -24,7 +24,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 /**
- * Created by Kam6512 on 2015-10-14.
+ * Created by kam6512 on 2015-10-14.
  */
 public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Animation.AnimationListener {
 
@@ -131,16 +131,16 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         private DeviceItem deviceItem;
 
-        private View itemView;
+        private final View itemView;
 
-        private TextView extraName;
-        private TextView extraAddress;
-        private TextView extraBondState;
-        private TextView extraType;
-        private TextView extraRssi;
+        private final TextView extraName;
+        private final TextView extraAddress;
+        private final TextView extraBondState;
+        private final TextView extraType;
+        private final TextView extraRssi;
 
-        private LinearLayout expandGroup;
-        private ImageView expendImageView;
+        private final LinearLayout expandGroup;
+        private final ImageView expendImageView;
 
 
         public DeviceViewHolder(@NonNull final View itemView) {

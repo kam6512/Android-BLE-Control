@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
-    android:id="@+id/device_item_card"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/DeviceItemCard"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@null"
@@ -49,7 +49,6 @@
             android:showDividers="middle">
 
             <TableRow
-                android:id="@+id/row_bond"
                 style="@style/DeviceItemTableRow">
 
                 <TextView
@@ -63,7 +62,6 @@
             </TableRow>
 
             <TableRow
-                android:id="@+id/row_type"
                 style="@style/DeviceItemTableRow">
 
                 <TextView
@@ -78,7 +76,6 @@
             </TableRow>
 
             <TableRow
-                android:id="@+id/row_rssi"
                 style="@style/DeviceItemTableRow">
 
                 <TextView
@@ -99,5 +96,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|top"
         android:layout_margin="7dp"
-        android:background="@null"/>
+        android:background="@null"
+        tools:ignore="ContentDescription"/>
 </android.support.v7.widget.CardView>

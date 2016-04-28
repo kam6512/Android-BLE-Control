@@ -10,7 +10,7 @@ import com.rainbow.kam.android_ble_control.ui.activity.ScanActivity;
 import dagger.Component;
 
 /**
- * Created by kam6512 on 2016-04-27.
+ * Created by Kang Young Won on 2016-04-27.
  */
 @PerActivity
 @Component(dependencies = {AppComponent.class}, modules = {ActivityModule.class})

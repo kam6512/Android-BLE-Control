@@ -108,9 +108,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     class ServiceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView serviceTitle;
-        private TextView serviceUuid;
-        private TextView serviceType;
+        private final TextView serviceTitle;
+        private final TextView serviceUuid;
+        private final TextView serviceType;
 
 
         public ServiceViewHolder(View itemView) {
@@ -143,8 +143,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     class CharacteristicViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView characteristicTitle;
-        private TextView characteristicUuid;
+        private final TextView characteristicTitle;
+        private final TextView characteristicUuid;
 
 
         public CharacteristicViewHolder(View itemView) {

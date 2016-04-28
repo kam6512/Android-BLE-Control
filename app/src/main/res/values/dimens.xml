@@ -1,28 +1,10 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="width">10dp</dimen>
-    <dimen name="text_size">70dp</dimen>
-    <dimen name="metric_size">14dp</dimen>
-    <dimen name="metric_padding_y">25dp</dimen>
-
-    <dimen name="first">10dp</dimen>
-    <dimen name="second">15dp</dimen>
-    <dimen name="third">20dp</dimen>
-
-    <dimen name="text_input_margin">10dp</dimen>
     <dimen name="deviceItem_margin">7dp</dimen>
-
-    <dimen name="nav_header_padding">15dp</dimen>
-    <dimen name="toolbar_drop_shadow">3dp</dimen>
-    <dimen name="searching_progress_bar">32dp</dimen>
 
     <dimen name="profile_app_bar_layout_height">256dp</dimen>
     <dimen name="expanded_title_margin_end">64dp</dimen>
     <dimen name="expanded_title_margin_start">48dp</dimen>
 
-    <dimen name="circle_counter_size">300dp</dimen>
-    <dimen name="circle_counter_margin">10dp</dimen>
-    <dimen name="circle_button_size">64dp</dimen>
 </resources>

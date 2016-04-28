@@ -1,36 +1,13 @@
 <resources>
     <string name="app_name">BT.Scanner</string>
-    <string name="gattManager">BLE</string>
 
-    <string name="device_name_prime">Prime</string>
-    <string name="device_name_Vidonn">X6S</string>
     <string name="device_name_def">N/A</string>
 
-    <string name="menu.main.scan">스캔</string>
-    <string name="menu.main.sample">샘플</string>
-    <string name="menu.main.help">HELP</string>
-    <string name="menu.main.link">link</string>
-
-    <string name="menu.setting">유저정보</string>
-    <string name="menu.setting.device">기기 변경하기</string>
-    <string name="menu.setting.user">신체 정보수정</string>
-    <string name="menu.setting.goal">목표 지정</string>
-
-    <string name="menu.about">ABOUT</string>
-    <string name="menu.about.dev">개발자 모드</string>
-    <string name="menu.about.reset">유저정보 지우기</string>
-    <string name="menu.about.info">앱 정보</string>
-
-    <string name="bt.rssi">rssi</string>
     <string name="bt.rssi_unit">db</string>
     <string name="bt.connecting">connecting</string>
     <string name="bt.connected">connected</string>
     <string name="bt.disconnected">disconnected</string>
-    <string name="bt.on">블루투스 On</string>
-    <string name="bt.not.init">블루투스가 시작되지 않았습니다.\n 블루투스를 시작해야 합니다.</string>
     <string name="bluetooth.fail">기기가 블루투스를 지원하지 않습니다</string>
-
-    <string name="device.list.nothing">블루루스 BLE 기기가 탐색되지 않았습니다</string>
 
     <string name="permission.request"><![CDATA[[권한] 탭 -> [위치] 권한을 허용해주십시오]]></string>
     <string name="permission.thanks">권한 획득, 감사합니다.</string>
@@ -62,79 +39,10 @@
 
     <string name="profile.characteristics.name">profile.characteristics.name</string>
     <string name="profile.characteristics.UUID">profile.characteristics.UUID</string>
-    <string name="profile.characteristics.defValue">profile.characteristics.defValue</string>
 
     <string name="profile.service.name">profile.service.name</string>
     <string name="profile.service.UUID">profile.service.UUID</string>
     <string name="profile.service.type">profile.service.type</string>
-
-
-    <string name="nursing.setting.device">기기 설정이 필요합니다</string>
-    <string name="nursing.setting.device.action">설정</string>
-    <string name="nursing.setting.device.tag">Device Select</string>
-
-    <string name="nursing.setting.user">신체 정보를 입력하시겠습니까?</string>
-    <string name="nursing.setting.user.action">입력</string>
-    <string name="nursing.setting.user.tag">User Info</string>
-    <string name="nursing.setting.user.error">다시 입력하세요</string>
-
-    <string name="nursing.setting.goal.tag">Goal</string>
-
-    <string name="nursing.update">최근 업데이트</string>
-
-    <string name="nursing.step.title">"도보량"</string>
-    <string name="nursing.calorie.title">"소모열량"</string>
-    <string name="nursing.distance.title">"활동거리"</string>
-
-    <string name="nursing.step">" 걸음 "</string>
-    <string name="nursing.calorie">" kcal "</string>
-    <string name="nursing.distance">" m "</string>
-
-    <string name="nursing.total.step">"총 걸음"</string>
-    <string name="nursing.total.calorie">"누적 kcal"</string>
-    <string name="nursing.total.distance">"누적 거리"</string>
-
-    <string name="nursing.access.denial">"Access Denial"</string>
-
-    <string name="add.user.name.hint">Name</string>
-    <string name="add.user.age.hint">Age (in full)</string>
-    <string name="add.user.height.hint">Height (Metric)</string>
-    <string name="add.user.weight.hint">Weight (Kg)</string>
-
-    <string name="user.name.default">홍길동</string>
-    <string name="user.age.default">20</string>
-    <string name="user.height.default">170</string>
-    <string name="user.weight.default">60</string>
-
-    <string name="gender.man">남성</string>
-    <string name="gender.woman">여성</string>
-
-    <string name="goal.def.step">20000</string>
-    <string name="goal.def.calorie">100</string>
-    <string name="goal.def.distance">10000</string>
-
-    <string name="nursing_chart_update_wait">대기중…</string>
-    <string name="nursing_ignore">강제종료</string>
-    <string name="nursing_update_format">최근 업데이트 시간 [ HH : mm ]</string>
-    <string name="nursing_battery_unit">%</string>
-
-    <string name="nursing_save_date_format_full">yy년 MM월 dd일</string>
-    <string name="nursing_save_date_format">MM월 dd일</string>
-    <string name="nursing_disconnect_snack">기기와의 연결이 끊어질 때 까지 기다려 주십시오</string>
-
-    <string name="nursing_data_queue">데이터 로딩중..</string>
-
-
-    <string name="nursing_remove_title">어떤 데이터를 삭제하시겠습니까?</string>
-    <string name="nursing_remove_item_user_device">유저정보(기기, 신체 정보)</string>
-    <string name="nursing_remove_item_exercise">운동정보(도보량, 소모열량, 활동거리 저장 DB)</string>
-    <string name="nursing_remove_item_all">전체 삭제</string>
-    <string name="nursing_remove_accept">삭제</string>
-    <string name="nursing_remove_denied">취소</string>
-    <string name="nursing_reconnect_title">이전 데이터와 연동하시겠습니까?</string>
-    <string name="nursing_reconnect_content">이전 기기에서 사용한 운동량 데이터가 남아있습니다. 이전 데이터를 삭제하거나 이어서 저장 할 수 있습니다.</string>
-    <string name="nursing_reconnect_accept">이어하기</string>
-    <string name="nursing_reconnect_denied">처음부터</string>
 
 
 </resources>

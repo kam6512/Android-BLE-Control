@@ -1,5 +1,6 @@
 package com.rainbow.kam.android_ble_control.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by kam6512 on 2016-04-08.
  */
+@SuppressLint("Registered")
 @EActivity(R.layout.a_scan)
 public class ScanActivity extends BaseActivity implements
         SwipeRefreshLayout.OnRefreshListener,

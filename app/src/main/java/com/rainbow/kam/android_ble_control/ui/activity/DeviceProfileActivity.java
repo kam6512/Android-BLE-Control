@@ -1,5 +1,6 @@
 package com.rainbow.kam.android_ble_control.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -39,6 +40,7 @@ import javax.inject.Inject;
 /**
  * Created by kam6512 on 2015-11-27.
  */
+@SuppressLint("Registered")
 @EActivity(R.layout.a_profile)
 public class DeviceProfileActivity extends BaseActivity implements
         ProfileAdapter.OnGattItemClickListener,

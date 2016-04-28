@@ -4,39 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorPrimaryOrange">#ff8c00</color>
     <color name="colorAccent">#4169e1</color>
-    <color name="colorPrimaryAccent">#dc143c</color>
 
     <color name="text_dark">#595959</color>
     <color name="text_light">#ffffff</color>
 
     <color name="secondary_text">#727272</color>
 
-    <color name="link">#8BC34A</color>
-    <color name="rippleColor">#00d7ff</color>
-    <color name="circle_text">#ffffff</color>
-
-    <color name="chart_label">#6a84c3</color>
-    <color name="chart_line">#b3b5bb</color>
-    <color name="chart_dots">#ffc755</color>
-    <color name="chart_fill">#2d374c</color>
-
-    <color name="stepColor">#00d7ff</color>
-    <color name="stepAccent">#2af</color>
-    <color name="stepPrimary">#32f1ff</color>
-    <color name="stepPrimaryDark">#0078ff</color>
-
-    <color name="calorieColor">#ff5675</color>
-    <color name="calorieAccent">#ff4500</color>
-    <color name="caloriePrimary">#ff88a7</color>
-    <color name="caloriePrimaryDark">#dc143c</color>
-
-    <color name="distanceColor">#b2fa5c</color>
-    <color name="distanceAccent">#32cd32</color>
-    <color name="distancePrimary">#54bd54</color>
-    <color name="distancePrimaryDark">#228b22</color>
-
-    <color name="etcColor">#ffd700</color>
-    <color name="etcAccent">#ffc300</color>
-    <color name="etcPrimary">#fff56e</color>
-    <color name="etcPrimaryDark">#ff9100</color>
 </resources>

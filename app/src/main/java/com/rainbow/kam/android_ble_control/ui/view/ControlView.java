@@ -274,7 +274,7 @@ public class ControlView extends NestedScrollView implements View.OnClickListene
     }
 
 
-    public byte[] getBytes(String hex) {
+    private byte[] getBytes(String hex) {
         hex = makeHexClean(hex);
         return parseHexStringToBytes(hex);
     }
