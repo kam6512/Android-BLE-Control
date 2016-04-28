@@ -49,6 +49,10 @@ dependencies {
 
     compile 'com.github.pwittchen:reactivebeacons:0.4.1'
 
+    compile 'com.google.dagger:dagger:2.0.2'
+    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    compile 'com.jakewharton.threetenabp:threetenabp:1.0.3'
+
     compile project(':Manager')
 }
 repositories {
