@@ -155,8 +155,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="">
-
-            <requestFocus/>
         </EditText>
 
         <TableLayout
@@ -174,7 +172,7 @@
                     android:background="@null"
                     android:text="@string/profile.label.string"
                     android:textColor="#888"
-                    android:textSize="10sp"/>
+                    android:textSize="12sp"/>
 
                 <TextView
                     android:id="@+id/control_ascii_value"
@@ -195,7 +193,7 @@
                     android:background="@null"
                     android:text="@string/profile.label.updated"
                     android:textColor="#888"
-                    android:textSize="10sp"/>
+                    android:textSize="12sp"/>
 
                 <TextView
                     android:id="@+id/control_timestamp"
