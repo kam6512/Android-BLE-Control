@@ -33,7 +33,10 @@ import java.util.Objects;
  * Created by kam6512 on 2015-11-02.
  */
 @EViewGroup(R.layout.v_profile_control)
-public class ControlView extends NestedScrollView implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class ControlView
+        extends NestedScrollView
+        implements View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener {
 
 
     @ViewById(R.id.characteristic_device_name) TextView deviceName;

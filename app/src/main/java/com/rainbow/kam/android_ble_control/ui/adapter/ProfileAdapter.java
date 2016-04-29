@@ -18,6 +18,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by kam6512 on 2016-04-27.
  */
@@ -106,23 +110,20 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 
-    class ServiceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ServiceViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView serviceTitle;
-        private final TextView serviceUuid;
-        private final TextView serviceType;
+        @Bind(R.id.profile_parent_list_item_service_name) TextView serviceTitle;
+        @Bind(R.id.profile_parent_list_item_service_UUID) TextView serviceUuid;
+        @Bind(R.id.profile_parent_list_item_service_type) TextView serviceType;
 
 
-        public ServiceViewHolder(View itemView) {
+        public ServiceViewHolder(final View itemView) {
             super(itemView);
-            serviceTitle = (TextView) itemView.findViewById(R.id.profile_parent_list_item_service_name);
-            serviceUuid = (TextView) itemView.findViewById(R.id.profile_parent_list_item_service_UUID);
-            serviceType = (TextView) itemView.findViewById(R.id.profile_parent_list_item_service_type);
-            itemView.setOnClickListener(this);
+            ButterKnife.bind(this, itemView);
         }
 
 
-        private void bindViews(BluetoothGattService bluetoothGattService) {
+        private void bindViews(final BluetoothGattService bluetoothGattService) {
             String uuid = bluetoothGattService.getUuid().toString();
             String name = GattAttributes.resolveServiceName(uuid);
             uuid = uuidLabel + uuid.substring(4, 8);
@@ -135,27 +136,25 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
 
-        @Override
-        public void onClick(View v) {
+        @OnClick(R.id.profile_parent_list_item_service)
+        public void onServiceSelect() {
             onGattItemClickListener.onServiceClickListener(getLayoutPosition());
         }
     }
 
-    class CharacteristicViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class CharacteristicViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView characteristicTitle;
-        private final TextView characteristicUuid;
+        @Bind(R.id.profile_child_list_item_characteristic_name) TextView characteristicTitle;
+        @Bind(R.id.profile_child_list_item_characteristic_UUID) TextView characteristicUuid;
 
 
-        public CharacteristicViewHolder(View itemView) {
+        public CharacteristicViewHolder(final View itemView) {
             super(itemView);
-            characteristicTitle = (TextView) itemView.findViewById(R.id.profile_child_list_item_characteristics_name);
-            characteristicUuid = (TextView) itemView.findViewById(R.id.profile_child_list_item_characteristics_UUID);
-            itemView.setOnClickListener(this);
+            ButterKnife.bind(this, itemView);
         }
 
 
-        private void bindViews(BluetoothGattCharacteristic characteristicItem) {
+        private void bindViews(final BluetoothGattCharacteristic characteristicItem) {
             String uuid = characteristicItem.getUuid().toString();
             String name = GattAttributes.resolveCharacteristicName(uuid);
             uuid = uuidLabel + uuid.substring(4, 8);
@@ -164,8 +163,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
 
-        @Override
-        public void onClick(View v) {
+        @OnClick(R.id.profile_child_list_item_characteristic)
+        public void onCharacteristicSelect() {
             onGattItemClickListener.onCharacteristicClickListener(getLayoutPosition());
         }
     }
