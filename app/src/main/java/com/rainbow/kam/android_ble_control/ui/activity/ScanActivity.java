@@ -67,9 +67,7 @@ public class ScanActivity extends BaseActivity implements
 
     @Override protected void onResume() {
         super.onResume();
-        if (canObserveBeacons()) {
-            startScan();
-        }
+        startScan();
     }
 
 
@@ -105,7 +103,15 @@ public class ScanActivity extends BaseActivity implements
 
 
     @Override public void onDeviceSelect(DeviceItem device) {
-        startCommandActivity(device);
+        Observable.just(this)
+                .map(activity -> {
+                    Intent commandIntent = new Intent(activity, DeviceProfileActivity_.class);
+                    commandIntent.putExtra(KEY_DEVICE_NAME, device.getExtraName());
+                    commandIntent.putExtra(KEY_DEVICE_ADDRESS, device.getExtraAddress());
+                    return commandIntent;
+                })
+                .subscribe(this::startActivity)
+                .unsubscribe();
     }
 
 
@@ -118,20 +124,16 @@ public class ScanActivity extends BaseActivity implements
 
 
     private void startScan() {
+        if (!canObserveBeacons()) {
+            return;
+        }
         beaconSubscription = reactiveBeacons.observe()
                 .take(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(() -> refreshScanLayout.setRefreshing(false))
-                .map(beacon1 -> {
-                    String name = beacon1.device.getName();
-                    if (name == null) {
-                        name = defaultDeviceName;
-                    }
-                    return new DeviceItem(beacon1.device, beacon1.rssi);
-                })
+                .map(beacon1 -> new DeviceItem(beacon1.device, beacon1.rssi, defaultDeviceName))
                 .subscribe(deviceAdapter::addDevice);
-
     }
 
 
@@ -152,18 +154,5 @@ public class ScanActivity extends BaseActivity implements
         }
         BluetoothHelper.requestBluetoothPermission(this);
         return true;
-    }
-
-
-    private void startCommandActivity(DeviceItem device) {
-        Observable.just(this)
-                .map(activity -> {
-                    Intent commandIntent = new Intent(activity, DeviceProfileActivity_.class);
-                    commandIntent.putExtra(KEY_DEVICE_NAME, device.getExtraName());
-                    commandIntent.putExtra(KEY_DEVICE_ADDRESS, device.getExtraAddress());
-                    return commandIntent;
-                })
-                .subscribe(this::startActivity)
-                .unsubscribe();
     }
 }

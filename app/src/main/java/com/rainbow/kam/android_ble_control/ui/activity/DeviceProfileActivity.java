@@ -64,6 +64,9 @@ public class DeviceProfileActivity extends BaseActivity implements
     @ViewById(R.id.profile_name) TextView deviceNameTextView;
     @ViewById(R.id.profile_address) TextView deviceAddressTextView;
     @ViewById(R.id.profile_rssi) TextView deviceRSSITextView;
+
+    private static final String NONE = "ERROR!";
+
     @ViewById(R.id.profile_root) CoordinatorLayout rootLayout;
 
     @ViewById(R.id.profile_state) TextView deviceStateTextView;
@@ -115,10 +118,10 @@ public class DeviceProfileActivity extends BaseActivity implements
             deviceStateTextView.setText(connectingLabel);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
-            deviceNameTextView.setText(e.getMessage());
-            deviceAddressTextView.setText(e.getMessage());
-            deviceRSSITextView.setText(e.getMessage());
-            deviceStateTextView.setText(e.getMessage());
+            deviceNameTextView.setText(NONE);
+            deviceAddressTextView.setText(NONE);
+            deviceRSSITextView.setText(NONE);
+            deviceStateTextView.setText(NONE);
         }
     }
 
@@ -291,6 +294,7 @@ public class DeviceProfileActivity extends BaseActivity implements
 
     @Override public void onCharacteristicClickListener(int position) {
         controlCharacteristic = bluetoothGattCharacteristics.get(position);
+        recyclerView.setVisibility(View.GONE);
         controlView.setVisibility(View.VISIBLE);
     }
 
@@ -306,7 +310,6 @@ public class DeviceProfileActivity extends BaseActivity implements
 
 
     @Override public void onControlReady() {
-        recyclerView.setVisibility(View.GONE);
         controlView.init(deviceName, deviceAddress, controlCharacteristic);
     }
 

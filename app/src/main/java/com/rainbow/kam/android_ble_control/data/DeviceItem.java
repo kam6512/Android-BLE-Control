@@ -3,6 +3,7 @@ package com.rainbow.kam.android_ble_control.data;
 import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
 
+import com.google.common.base.Strings;
 import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 
 /**
@@ -16,8 +17,13 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
     private final int extraRssi;
 
 
-    public DeviceItem(BluetoothDevice bluetoothDevice, int rssi) {
-        this.extraName = bluetoothDevice.getName();
+    public DeviceItem(BluetoothDevice bluetoothDevice, int rssi, String defaultDeviceName) {
+        String name = bluetoothDevice.getName();
+        if (Strings.isNullOrEmpty(name)) {
+            this.extraName = defaultDeviceName;
+        } else {
+            this.extraName = bluetoothDevice.getName();
+        }
         this.extraAddress = bluetoothDevice.getAddress();
         this.extraBondState = bluetoothDevice.getBondState();
         this.extraType = bluetoothDevice.getType();
