@@ -1,4 +1,4 @@
-package com.rainbow.kam.android_ble_control.dagger;
+package com.rainbow.kam.android_ble_control.dagger.scope;
 
 /**
  * Created by kam6512 on 2016-04-27.

@@ -3,7 +3,7 @@ package com.rainbow.kam.android_ble_control.dagger.module;
 import android.app.Activity;
 import android.content.Context;
 
-import com.rainbow.kam.android_ble_control.dagger.PerActivity;
+import com.rainbow.kam.android_ble_control.dagger.scope.PerActivity;
 
 import dagger.Module;
 import dagger.Provides;
