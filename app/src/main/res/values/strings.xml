@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">BT.Scanner</string>
 
-    <string name="device_name_def">N/A</string>
+    <!--<string name="device_name_def">N/A</string>-->
+    <string name="device_name_def">UNKNOWN DEVICE</string>
 
     <string name="bt.rssi_unit">db</string>
     <string name="bt.connecting">connecting</string>
