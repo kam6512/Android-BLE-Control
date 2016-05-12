@@ -14,7 +14,7 @@ import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
 import com.rainbow.kam.android_ble_control.ui.adapter.DeviceAdapter;
-import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
+import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

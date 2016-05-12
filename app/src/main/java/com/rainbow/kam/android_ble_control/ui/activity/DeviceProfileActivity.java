@@ -21,9 +21,11 @@ import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
 import com.rainbow.kam.android_ble_control.ui.adapter.ProfileAdapter;
 import com.rainbow.kam.android_ble_control.ui.view.ControlView;
-import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
-import com.rainbow.kam.ble_gatt_manager.GattCustomCallbacks;
-import com.rainbow.kam.ble_gatt_manager.GattManager;
+import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
+import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
+import com.rainbow.kam.ble_gatt_manager.legacy.GattManager;
+import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.GattException;
+import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.details.*;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -202,103 +204,6 @@ public class DeviceProfileActivity extends BaseActivity implements
     }
 
 
-    @UiThread @Override public void onDeviceConnected() {
-        deviceStateTextView.setText(connectedLabel);
-    }
-
-
-    @Override public void onDeviceConnectFail(Exception e) {
-        showExceptionMessage(e.getMessage());
-    }
-
-
-    @UiThread @Override public void onDeviceDisconnected() {
-        deviceStateTextView.setText(disconnectedLabel);
-        finish();
-    }
-
-
-    @Override public void onDeviceDisconnectFail(Exception e) {
-        showExceptionMessage(e.getMessage());
-    }
-
-
-    @Override public void onServicesFound(BluetoothGatt bluetoothGatt) {
-        bluetoothGattServices = bluetoothGatt.getServices();
-        showServiceList();
-    }
-
-
-    @Override public void onServicesNotFound(Exception e) {
-        showExceptionMessage(e.getMessage());
-    }
-
-
-    @Override public void onDeviceReady() {
-        Snackbar.make(rootLayout, "onDeviceReady", Snackbar.LENGTH_LONG).show();
-    }
-
-
-    @Override public void onReadSuccess(final BluetoothGattCharacteristic ch) {
-        controlView.newValueForCharacteristic(ch);
-    }
-
-
-    @Override public void onReadFail(Exception e) {
-        controlView.setFail();
-        showExceptionMessage(e.getMessage());
-    }
-
-
-    @Override public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
-        controlView.newValueForCharacteristic(ch);
-    }
-
-
-    @Override public void onSetNotificationSuccess() {
-        Snackbar.make(rootLayout, "onSetNotificationSuccess", Snackbar.LENGTH_LONG).show();
-    }
-
-
-    @Override public void onSetNotificationFail(Exception e) {
-        showExceptionMessage(e.getMessage());
-    }
-
-
-    @Override public void onWriteSuccess() {
-        Snackbar.make(rootLayout, "onWriteSuccess", Snackbar.LENGTH_LONG).show();
-    }
-
-
-    @Override public void onWriteFail(Exception e) {
-        showExceptionMessage(e.getMessage());
-    }
-
-
-    @UiThread @Override public void onRSSIUpdate(final int rssi) {
-        deviceRSSI = rssi + RSSI_UNIT;
-        deviceRSSITextView.setText(deviceRSSI);
-    }
-
-
-    @Override public void onRSSIMiss() {
-        Snackbar.make(rootLayout, "onRSSIMiss", Snackbar.LENGTH_LONG).show();
-    }
-
-
-    @Override public void onServiceClickListener(int position) {
-        bluetoothGattCharacteristics = bluetoothGattServices.get(position).getCharacteristics();
-        showCharacteristicList();
-    }
-
-
-    @Override public void onCharacteristicClickListener(int position) {
-        controlCharacteristic = bluetoothGattCharacteristics.get(position);
-        recyclerView.setVisibility(View.GONE);
-        controlView.setVisibility(View.VISIBLE);
-    }
-
-
     @UiThread void showServiceList() {
         profileAdapter.setServiceList(bluetoothGattServices);
     }
@@ -326,5 +231,74 @@ public class DeviceProfileActivity extends BaseActivity implements
 
     @Override public void setWriteValue(byte[] data) {
         gattManager.writeValue(controlCharacteristic, data);
+    }
+
+
+    @UiThread @Override public void onDeviceConnected() {
+        deviceStateTextView.setText(connectedLabel);
+    }
+
+
+    @UiThread @Override public void onDeviceDisconnected() {
+        deviceStateTextView.setText(disconnectedLabel);
+        finish();
+    }
+
+
+    @Override public void onServicesFound(BluetoothGatt bluetoothGatt) {
+        bluetoothGattServices = bluetoothGatt.getServices();
+        showServiceList();
+    }
+
+
+    @Override public void onDeviceReady() {
+        Snackbar.make(rootLayout, "onDeviceReady", Snackbar.LENGTH_LONG).show();
+    }
+
+
+    @Override public void onReadSuccess(final BluetoothGattCharacteristic ch) {
+        controlView.newValueForCharacteristic(ch);
+    }
+
+
+    @Override public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
+        controlView.newValueForCharacteristic(ch);
+    }
+
+
+    @Override public void onSetNotificationSuccess() {
+        Snackbar.make(rootLayout, "onSetNotificationSuccess", Snackbar.LENGTH_LONG).show();
+    }
+
+
+    @Override public void onWriteSuccess() {
+        Snackbar.make(rootLayout, "onWriteSuccess", Snackbar.LENGTH_LONG).show();
+    }
+
+
+    @UiThread @Override public void onRSSIUpdate(final int rssi) {
+        deviceRSSI = rssi + RSSI_UNIT;
+        deviceRSSITextView.setText(deviceRSSI);
+    }
+
+
+    @Override public void onError(GattException e) {
+        showExceptionMessage(e.getMessage());
+        if (e instanceof ReadCharacteristicException) {
+            controlView.setFail();
+        }
+    }
+
+
+    @Override public void onServiceClickListener(int position) {
+        bluetoothGattCharacteristics = bluetoothGattServices.get(position).getCharacteristics();
+        showCharacteristicList();
+    }
+
+
+    @Override public void onCharacteristicClickListener(int position) {
+        controlCharacteristic = bluetoothGattCharacteristics.get(position);
+        recyclerView.setVisibility(View.GONE);
+        controlView.setVisibility(View.VISIBLE);
     }
 }

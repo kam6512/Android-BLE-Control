@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Strings;
-import com.rainbow.kam.ble_gatt_manager.GattAttributes;
+import com.rainbow.kam.ble_gatt_manager.legacy.GattAttributes;
 
 /**
  * Created by kam6512 on 2015-10-14.

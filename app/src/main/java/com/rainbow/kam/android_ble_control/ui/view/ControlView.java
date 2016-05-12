@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.ble_gatt_manager.GattAttributes;
+import com.rainbow.kam.ble_gatt_manager.legacy.GattAttributes;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EViewGroup;
