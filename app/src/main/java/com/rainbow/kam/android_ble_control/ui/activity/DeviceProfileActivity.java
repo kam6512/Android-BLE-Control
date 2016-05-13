@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,8 +28,10 @@ import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.GattException;
 import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.details.ReadCharacteristicException;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
@@ -50,6 +51,14 @@ public class DeviceProfileActivity extends BaseActivity implements
 
     private final String TAG = getClass().getSimpleName();
 
+    private static final String NONE = "ERROR!";
+
+    private static final int GONE = View.GONE;
+    private static final int VISIBLE = View.VISIBLE;
+
+    private GattManager gattManager;
+    private BluetoothGattCharacteristic controlCharacteristic;
+
     @StringRes(R.string.bt_rssi_unit) String RSSI_UNIT;
     @StringRes(R.string.bt_connecting) String connectingLabel;
     @StringRes(R.string.bt_connected) String connectedLabel;
@@ -60,16 +69,12 @@ public class DeviceProfileActivity extends BaseActivity implements
     @Extra(ScanActivity.KEY_DEVICE_ADDRESS) String deviceAddress;
     private String deviceRSSI;
 
+    @ViewById(R.id.profile_root) CoordinatorLayout rootLayout;
 
     @ViewById(R.id.profile_toolbar) Toolbar toolbar;
     @ViewById(R.id.profile_name) TextView deviceNameTextView;
-    @ViewById(R.id.profile_address) TextView deviceAddressTextView;
     @ViewById(R.id.profile_rssi) TextView deviceRSSITextView;
-
-    private static final String NONE = "ERROR!";
-
-    @ViewById(R.id.profile_root) CoordinatorLayout rootLayout;
-
+    @ViewById(R.id.profile_address) TextView deviceAddressTextView;
     @ViewById(R.id.profile_state) TextView deviceStateTextView;
 
     @ViewById(R.id.profile_recyclerView) RecyclerView recyclerView;
@@ -77,13 +82,6 @@ public class DeviceProfileActivity extends BaseActivity implements
     @ViewById(R.id.profile_control) ControlView controlView;
 
     @Inject ProfileAdapter profileAdapter;
-
-    private GattManager gattManager;
-
-//    private List<BluetoothGattService> bluetoothGattServices;
-//    private List<BluetoothGattCharacteristic> bluetoothGattCharacteristics;
-
-    private BluetoothGattCharacteristic controlCharacteristic;
 
 
     @Override protected void injectComponent(ActivityComponent component) {
@@ -102,7 +100,6 @@ public class DeviceProfileActivity extends BaseActivity implements
         deviceAddressTextView.setText(deviceAddress);
         deviceRSSI = RSSI_UNIT;
         deviceRSSITextView.setText(deviceRSSI);
-
     }
 
 
@@ -118,11 +115,8 @@ public class DeviceProfileActivity extends BaseActivity implements
             gattManager.connect(deviceAddress);
             deviceStateTextView.setText(connectingLabel);
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-            deviceNameTextView.setText(NONE);
-            deviceAddressTextView.setText(NONE);
-            deviceRSSITextView.setText(NONE);
-            deviceStateTextView.setText(NONE);
+            showMessage(e.getMessage());
+            showNoneValue();
         }
     }
 
@@ -131,8 +125,7 @@ public class DeviceProfileActivity extends BaseActivity implements
         if (gattManager != null && gattManager.isBluetoothAvailable()) {
             gattManager.disconnect();
         } else {
-            deviceStateTextView.setText(disconnectedLabel);
-            finish();
+            showDisconnected();
         }
     }
 
@@ -158,12 +151,8 @@ public class DeviceProfileActivity extends BaseActivity implements
     }
 
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    @OptionsItem(android.R.id.home) void onBackMenuItemSelected() {
+        finish();
     }
 
 
@@ -182,44 +171,55 @@ public class DeviceProfileActivity extends BaseActivity implements
 
     @Override public void onBackPressed() {
         if (gattManager.isConnected()) {
-            if (controlView.getVisibility() == View.VISIBLE) {
-                controlView.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-            } else {
-                if (profileAdapter.isBackPressedAvailable()) {
-                    disconnectDevice();
-                } else {
-                    profileAdapter.showServiceList();
-                }
-            }
+            toBackStack();
         } else {
             finish();
         }
     }
 
 
-    @UiThread void showExceptionMessage(String msg) {
+    private void toBackStack() {
+        if (controlView.getVisibility() == VISIBLE) {
+            dismissControlView();
+        } else {
+            if (profileAdapter.hasBackStack()) {
+                profileAdapter.showServiceList();
+            } else {
+                disconnectDevice();
+            }
+        }
+    }
+
+
+    private void showNoneValue() {
+        deviceNameTextView.setText(NONE);
+        deviceAddressTextView.setText(NONE);
+        deviceRSSITextView.setText(NONE);
+        deviceStateTextView.setText(NONE);
+    }
+
+
+    @UiThread void showDisconnected() {
+        deviceStateTextView.setText(disconnectedLabel);
+        finish();
+    }
+
+
+    private void showControlView() {
+        recyclerView.setVisibility(GONE);
+        controlView.setVisibility(VISIBLE);
+    }
+
+
+    private void dismissControlView() {
+        recyclerView.setVisibility(VISIBLE);
+        controlView.setVisibility(GONE);
+    }
+
+
+    @UiThread void showMessage(String msg) {
         Snackbar.make(rootLayout, msg, Snackbar.LENGTH_LONG).show();
-    }
-
-
-    @UiThread @Override public void onControlReady() {
-        controlView.init(deviceName, deviceAddress, controlCharacteristic);
-    }
-
-
-    @Override public void setNotification(boolean isNotificationEnable) {
-        gattManager.setNotification(controlCharacteristic, isNotificationEnable);
-    }
-
-
-    @Override public void setReadValue() {
-        gattManager.readValue(controlCharacteristic);
-    }
-
-
-    @Override public void setWriteValue(byte[] data) {
-        gattManager.writeValue(controlCharacteristic, data);
+        Log.i(TAG, msg);
     }
 
 
@@ -229,8 +229,7 @@ public class DeviceProfileActivity extends BaseActivity implements
 
 
     @UiThread @Override public void onDeviceDisconnected() {
-        deviceStateTextView.setText(disconnectedLabel);
-        finish();
+        showDisconnected();
     }
 
 
@@ -241,7 +240,7 @@ public class DeviceProfileActivity extends BaseActivity implements
 
 
     @Override public void onDeviceReady() {
-        Snackbar.make(rootLayout, "onDeviceReady", Snackbar.LENGTH_LONG).show();
+        showMessage("onDeviceReady");
     }
 
 
@@ -258,12 +257,12 @@ public class DeviceProfileActivity extends BaseActivity implements
 
 
     @Override public void onSetNotificationSuccess() {
-        Snackbar.make(rootLayout, "onSetNotificationSuccess", Snackbar.LENGTH_LONG).show();
+        showMessage("onSetNotificationSuccess");
     }
 
 
     @Override public void onWriteSuccess() {
-        Snackbar.make(rootLayout, "onWriteSuccess", Snackbar.LENGTH_LONG).show();
+        showMessage("onWriteSuccess");
     }
 
 
@@ -274,7 +273,7 @@ public class DeviceProfileActivity extends BaseActivity implements
 
 
     @UiThread @Override public void onError(GattException e) {
-        showExceptionMessage(e.getMessage());
+        showMessage(e.getMessage());
         if (e instanceof ReadCharacteristicException) {
             controlView.setFail();
         }
@@ -290,7 +289,27 @@ public class DeviceProfileActivity extends BaseActivity implements
     @UiThread @Override
     public void onCharacteristicClickListener(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
         controlCharacteristic = bluetoothGattCharacteristic;
-        recyclerView.setVisibility(View.GONE);
-        controlView.setVisibility(View.VISIBLE);
+        showControlView();
+    }
+
+
+    @UiThread @Override public void onControlReady() {
+        controlView.init(deviceName, deviceAddress, controlCharacteristic);
+    }
+
+
+    @Background @Override
+    public void setNotification(boolean isNotificationEnable) {
+        gattManager.setNotification(controlCharacteristic, isNotificationEnable);
+    }
+
+
+    @Background @Override public void setReadValue() {
+        gattManager.readValue(controlCharacteristic);
+    }
+
+
+    @Background @Override public void setWriteValue(byte[] data) {
+        gattManager.writeValue(controlCharacteristic, data);
     }
 }

@@ -98,8 +98,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void setCharacteristicList(List<BluetoothGattCharacteristic> bluetoothGattCharacteristics) {
         this.bluetoothGattCharacteristics.clear();
         this.bluetoothGattCharacteristics.addAll(bluetoothGattCharacteristics);
-        CURRENT_TYPE = TYPE_CHARACTERISTIC;
-        notifyDataSetChanged();
+        showCharacteristic();
     }
 
 
@@ -109,8 +108,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 
-    public boolean isBackPressedAvailable() {
-        return CURRENT_TYPE == TYPE_SERVICE;
+    private void showCharacteristic() {
+        CURRENT_TYPE = TYPE_CHARACTERISTIC;
+        notifyDataSetChanged();
+    }
+
+
+    public boolean hasBackStack() {
+        return CURRENT_TYPE == TYPE_CHARACTERISTIC;
     }
 
 
