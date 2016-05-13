@@ -10,11 +10,11 @@ import com.rainbow.kam.ble_gatt_manager.legacy.GattAttributes;
  * Created by kam6512 on 2015-10-14.
  */
 public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
-    private final String extraName;
-    private final String extraAddress;
-    private final int extraBondState;
-    private final int extraType;
-    private final int extraRssi;
+    private String name;
+    private final String address;
+    private final int bondState;
+    private final int type;
+    private final int rssi;
 
 
     private static final String UNKNOWN = GattAttributes.UNKNOWN;
@@ -23,39 +23,37 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
     public DeviceItem(BluetoothDevice bluetoothDevice, int rssi) {
         String name = bluetoothDevice.getName();
         if (Strings.isNullOrEmpty(name)) {
-            this.extraName = UNKNOWN;
-        } else {
-            this.extraName = bluetoothDevice.getName();
+            this.name = UNKNOWN;
         }
-        this.extraAddress = bluetoothDevice.getAddress();
-        this.extraBondState = bluetoothDevice.getBondState();
-        this.extraType = bluetoothDevice.getType();
-        this.extraRssi = rssi;
+        this.address = bluetoothDevice.getAddress();
+        this.bondState = bluetoothDevice.getBondState();
+        this.type = bluetoothDevice.getType();
+        this.rssi = rssi;
     }
 
 
     public final String getName() {
-        return this.extraName;
+        return this.name;
     }
 
 
     public final String getAddress() {
-        return this.extraAddress;
+        return this.address;
     }
 
 
     public final String getBondState() {
-        return GattAttributes.getBond(extraBondState);
+        return GattAttributes.getBond(bondState);
     }
 
 
     public final String getType() {
-        return GattAttributes.getType(extraType);
+        return GattAttributes.getType(type);
     }
 
 
     public final int getRssi() {
-        return this.extraRssi;
+        return this.rssi;
     }
 
 
@@ -65,27 +63,27 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
         if (getClass() != o.getClass()) return false;
 
         DeviceItem device = (DeviceItem) o;
-        return !(extraAddress != null ? !extraAddress.equals(device.getAddress()) : device.getAddress() != null);
+        return !(address != null ? !address.equals(device.getAddress()) : device.getAddress() != null);
     }
 
 
     @Override public String toString() {
         return "DeviceItem{" +
-                "extraName='" + extraName + '\'' +
-                ", extraAddress='" + extraAddress + '\'' +
-                ", extraBondState=" + extraBondState +
-                ", extraType=" + extraType +
-                ", extraRssi=" + extraRssi +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", bondState=" + bondState +
+                ", type=" + type +
+                ", rssi=" + rssi +
                 '}';
     }
 
 
     @Override public int hashCode() {
-        return this.extraAddress.hashCode();
+        return this.address.hashCode();
     }
 
 
     @Override public int compareTo(@NonNull final DeviceItem anotherDevice) {
-        return this.extraAddress.compareTo(anotherDevice.getAddress());
+        return this.address.compareTo(anotherDevice.getAddress());
     }
 }
