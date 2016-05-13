@@ -18,9 +18,11 @@ import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
+import com.rainbow.kam.android_ble_control.data.DeviceItem;
 import com.rainbow.kam.android_ble_control.ui.adapter.profile.OnGattItemClickListener;
 import com.rainbow.kam.android_ble_control.ui.adapter.profile.ProfileAdapter;
 import com.rainbow.kam.android_ble_control.ui.view.ControlView;
+import com.rainbow.kam.android_ble_control.ui.view.OnControlListener;
 import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattManager;
@@ -46,12 +48,12 @@ import javax.inject.Inject;
 @EActivity(R.layout.a_profile)
 public class DeviceProfileActivity extends BaseActivity implements
         OnGattItemClickListener,
-        ControlView.OnControlListener,
+        OnControlListener,
         GattCustomCallbacks {
 
     private final String TAG = getClass().getSimpleName();
 
-    private static final String NONE = "ERROR!";
+    @StringRes(R.string.profile_error) String NONE;
 
     private static final int GONE = View.GONE;
     private static final int VISIBLE = View.VISIBLE;
@@ -65,8 +67,8 @@ public class DeviceProfileActivity extends BaseActivity implements
     @StringRes(R.string.bt_disconnected) String disconnectedLabel;
 
 
-    @Extra(ScanActivity.KEY_DEVICE_NAME) String deviceName;
-    @Extra(ScanActivity.KEY_DEVICE_ADDRESS) String deviceAddress;
+    @Extra(DeviceItem.KEY_DEVICE_NAME) String deviceName;
+    @Extra(DeviceItem.KEY_DEVICE_ADDRESS) String deviceAddress;
     private String deviceRSSI;
 
     @ViewById(R.id.profile_root) CoordinatorLayout rootLayout;

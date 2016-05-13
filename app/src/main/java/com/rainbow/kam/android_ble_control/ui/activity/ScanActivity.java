@@ -39,8 +39,6 @@ public class ScanActivity extends BaseActivity implements
         SwipeRefreshLayout.OnRefreshListener,
         OnDeviceSelectListener {
 
-    public static final String KEY_DEVICE_NAME = "BLE_DEVICE_NAME";
-    public static final String KEY_DEVICE_ADDRESS = "BLE_DEVICE_ADDRESS";
 
     @ViewById(R.id.scan_root) SwipeRefreshLayout refreshScanLayout;
     @ViewById(R.id.device_list) RecyclerView deviceList;
@@ -104,8 +102,8 @@ public class ScanActivity extends BaseActivity implements
         Observable.just(this)
                 .map(activity -> {
                     Intent commandIntent = new Intent(activity, DeviceProfileActivity_.class);
-                    commandIntent.putExtra(KEY_DEVICE_NAME, device.getName());
-                    commandIntent.putExtra(KEY_DEVICE_ADDRESS, device.getAddress());
+                    commandIntent.putExtra(DeviceItem.KEY_DEVICE_NAME, device.getName());
+                    commandIntent.putExtra(DeviceItem.KEY_DEVICE_ADDRESS, device.getAddress());
                     return commandIntent;
                 })
                 .subscribe(this::startActivity)
