@@ -20,12 +20,13 @@ import android.widget.TextView;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
 import com.rainbow.kam.android_ble_control.ui.adapter.ProfileAdapter;
+import com.rainbow.kam.android_ble_control.ui.adapter.listener.OnGattItemClickListener;
 import com.rainbow.kam.android_ble_control.ui.view.ControlView;
 import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattManager;
 import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.GattException;
-import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.details.*;
+import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.details.ReadCharacteristicException;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -45,7 +46,7 @@ import javax.inject.Inject;
 @SuppressLint("Registered")
 @EActivity(R.layout.a_profile)
 public class DeviceProfileActivity extends BaseActivity implements
-        ProfileAdapter.OnGattItemClickListener,
+        OnGattItemClickListener,
         ControlView.OnControlListener,
         GattCustomCallbacks {
 

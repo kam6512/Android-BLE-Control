@@ -45,5 +45,7 @@
     <string name="profile.service.UUID">profile.service.UUID</string>
     <string name="profile.service.type">profile.service.type</string>
 
+    <string name="device.name.format" formatted="false">%s (%s)</string>
+
 
 </resources>

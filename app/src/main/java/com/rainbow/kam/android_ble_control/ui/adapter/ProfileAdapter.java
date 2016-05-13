@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 import com.rainbow.kam.android_ble_control.R;
+import com.rainbow.kam.android_ble_control.ui.adapter.listener.OnGattItemClickListener;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattAttributes;
 
 import java.util.ArrayList;
@@ -167,12 +168,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public void onCharacteristicSelect() {
             onGattItemClickListener.onCharacteristicClickListener(getLayoutPosition());
         }
-    }
-
-    public interface OnGattItemClickListener {
-        void onServiceClickListener(int position);
-
-        void onCharacteristicClickListener(int position);
     }
 }
 

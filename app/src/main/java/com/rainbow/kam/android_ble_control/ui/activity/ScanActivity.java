@@ -14,6 +14,7 @@ import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
 import com.rainbow.kam.android_ble_control.ui.adapter.DeviceAdapter;
+import com.rainbow.kam.android_ble_control.ui.adapter.listener.OnDeviceSelectListener;
 import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
 
 import org.androidannotations.annotations.AfterViews;
@@ -36,7 +37,7 @@ import rx.schedulers.Schedulers;
 @EActivity(R.layout.a_scan)
 public class ScanActivity extends BaseActivity implements
         SwipeRefreshLayout.OnRefreshListener,
-        DeviceAdapter.OnDeviceSelectListener {
+        OnDeviceSelectListener {
 
     public static final String KEY_DEVICE_NAME = "BLE_DEVICE_NAME";
     public static final String KEY_DEVICE_ADDRESS = "BLE_DEVICE_ADDRESS";

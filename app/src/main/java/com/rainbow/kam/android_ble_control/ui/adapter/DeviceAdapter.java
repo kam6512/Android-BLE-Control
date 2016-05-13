@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
+import com.rainbow.kam.android_ble_control.ui.adapter.listener.OnDeviceSelectListener;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -28,7 +30,7 @@ import butterknife.OnClick;
 public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final OnDeviceSelectListener onDeviceSelectListener;
 
-    private final SortedListAdapterCallback<DeviceItem> sortedListAdapterCallback = new SortedListAdapterCallback<DeviceItem>(this) {
+    private final SortedListAdapterCallback<DeviceItem> deviceListAdapterCallback = new SortedListAdapterCallback<DeviceItem>(this) {
         @Override
         public int compare(DeviceItem deviceItem1, DeviceItem deviceItem2) {
             return deviceItem1.compareTo(deviceItem2);
@@ -47,7 +49,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     };
 
-    private final SortedList<DeviceItem> sortedList = new SortedList<>(DeviceItem.class, sortedListAdapterCallback);
+    private final SortedList<DeviceItem> deviceList = new SortedList<>(DeviceItem.class, deviceListAdapterCallback);
 
 
     @Inject public DeviceAdapter(@NonNull Context context) {
@@ -66,23 +68,22 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         DeviceViewHolder deviceViewHolder = (DeviceViewHolder) holder;
-        deviceViewHolder.bindViews(sortedList.get(position));
+        deviceViewHolder.bindViews(deviceList.get(position));
     }
 
 
-    @Override
-    public int getItemCount() {
-        return sortedList.size();
+    @Override public int getItemCount() {
+        return deviceList.size();
     }
 
 
     public void addDevice(@NonNull final DeviceItem deviceItem) {
-        sortedList.add(deviceItem);
+        deviceList.add(deviceItem);
     }
 
 
     public void clear() {
-        sortedList.clear();
+        deviceList.clear();
     }
 
 
@@ -92,6 +93,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         @Bind(R.id.item_name) TextView name;
         @Bind(R.id.item_address) TextView address;
+        @BindString(R.string.device_name_format) String deviceNameFormat;
 
 
         public DeviceViewHolder(@NonNull final View itemView) {
@@ -101,8 +103,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
         private void bindViews(@NonNull DeviceItem deviceItem) {
-
-            String deviceName = String.format(Locale.getDefault(), "%s (%s)", deviceItem.getName(), deviceItem.getType());
+            String deviceName = String.format(Locale.getDefault(), deviceNameFormat, deviceItem.getName(), deviceItem.getType());
 
             name.setText(deviceName);
             address.setText(deviceItem.getAddress());
@@ -111,14 +112,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
 
-        @OnClick(R.id.device_item)
-        public void clickDeviceItem() {
+        @OnClick(R.id.device_item) public void clickDeviceItem() {
             onDeviceSelectListener.onDeviceSelect(deviceItem);
         }
-    }
-
-    public interface OnDeviceSelectListener {
-        void onDeviceSelect(DeviceItem device);
     }
 }
 
