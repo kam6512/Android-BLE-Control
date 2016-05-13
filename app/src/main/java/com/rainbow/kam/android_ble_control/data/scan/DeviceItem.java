@@ -1,4 +1,4 @@
-package com.rainbow.kam.android_ble_control.data;
+package com.rainbow.kam.android_ble_control.data.scan;
 
 import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;

@@ -1,4 +1,4 @@
-package com.rainbow.kam.android_ble_control.ui.adapter;
+package com.rainbow.kam.android_ble_control.ui.adapter.scan;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.android_ble_control.data.DeviceItem;
-import com.rainbow.kam.android_ble_control.ui.adapter.listener.OnDeviceSelectListener;
+import com.rainbow.kam.android_ble_control.data.scan.DeviceItem;
 
 import java.util.Locale;
 import java.util.Objects;

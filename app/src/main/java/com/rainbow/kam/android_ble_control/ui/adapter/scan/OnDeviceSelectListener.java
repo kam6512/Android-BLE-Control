@@ -1,6 +1,6 @@
-package com.rainbow.kam.android_ble_control.ui.adapter.listener;
+package com.rainbow.kam.android_ble_control.ui.adapter.scan;
 
-import com.rainbow.kam.android_ble_control.data.DeviceItem;
+import com.rainbow.kam.android_ble_control.data.scan.DeviceItem;
 
 /**
  * Created by Kang Young Won on 2016-05-13.

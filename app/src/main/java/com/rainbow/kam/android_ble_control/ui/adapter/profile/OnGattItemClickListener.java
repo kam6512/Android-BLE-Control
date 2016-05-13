@@ -1,4 +1,4 @@
-package com.rainbow.kam.android_ble_control.ui.adapter.listener;
+package com.rainbow.kam.android_ble_control.ui.adapter.profile;
 
 /**
  * Created by Kang Young Won on 2016-05-13.

@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
-import com.rainbow.kam.android_ble_control.ui.adapter.ProfileAdapter;
-import com.rainbow.kam.android_ble_control.ui.adapter.listener.OnGattItemClickListener;
+import com.rainbow.kam.android_ble_control.ui.adapter.profile.ProfileAdapter;
+import com.rainbow.kam.android_ble_control.ui.adapter.profile.OnGattItemClickListener;
 import com.rainbow.kam.android_ble_control.ui.view.ControlView;
 import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
