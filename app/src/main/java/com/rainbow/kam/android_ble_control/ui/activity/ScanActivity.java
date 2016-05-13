@@ -19,7 +19,6 @@ import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.annotations.res.StringRes;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,8 +40,6 @@ public class ScanActivity extends BaseActivity implements
 
     public static final String KEY_DEVICE_NAME = "BLE_DEVICE_NAME";
     public static final String KEY_DEVICE_ADDRESS = "BLE_DEVICE_ADDRESS";
-
-    @StringRes(R.string.device_name_def) String defaultDeviceName;
 
     @ViewById(R.id.scan_root) SwipeRefreshLayout refreshScanLayout;
     @ViewById(R.id.device_list) RecyclerView deviceList;
@@ -106,8 +103,8 @@ public class ScanActivity extends BaseActivity implements
         Observable.just(this)
                 .map(activity -> {
                     Intent commandIntent = new Intent(activity, DeviceProfileActivity_.class);
-                    commandIntent.putExtra(KEY_DEVICE_NAME, device.getExtraName());
-                    commandIntent.putExtra(KEY_DEVICE_ADDRESS, device.getExtraAddress());
+                    commandIntent.putExtra(KEY_DEVICE_NAME, device.getName());
+                    commandIntent.putExtra(KEY_DEVICE_ADDRESS, device.getAddress());
                     return commandIntent;
                 })
                 .subscribe(this::startActivity)
@@ -132,7 +129,7 @@ public class ScanActivity extends BaseActivity implements
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(() -> refreshScanLayout.setRefreshing(false))
-                .map(beacon1 -> new DeviceItem(beacon1.device, beacon1.rssi, defaultDeviceName))
+                .map(beacon1 -> new DeviceItem(beacon1.device, beacon1.rssi))
                 .subscribe(deviceAdapter::addDevice);
     }
 

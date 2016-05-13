@@ -50,52 +50,6 @@
 
         </TableRow>
 
-        <LinearLayout
-            android:id="@+id/row_expand"
-            android:divider="?android:attr/dividerHorizontal"
-            android:orientation="vertical"
-            android:showDividers="middle">
-
-            <TableRow
-                style="@style/DeviceItemTableRow">
-
-                <TextView
-                    style="@style/DeviceItemLabel"
-                    android:text="@string/profile.label.bondState"/>
-
-                <TextView
-                    android:id="@+id/item_bond"
-                    style="@style/DeviceItemLabel.DeviceItemContent"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
-            </TableRow>
-
-            <TableRow
-                style="@style/DeviceItemTableRow">
-
-                <TextView
-                    style="@style/DeviceItemLabel"
-                    android:text="@string/profile.label.type"/>
-
-                <TextView
-                    android:id="@+id/item_type"
-                    style="@style/DeviceItemLabel.DeviceItemContent"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-            </TableRow>
-
-            <TableRow
-                style="@style/DeviceItemTableRow">
-
-                <TextView
-                    style="@style/DeviceItemLabel"
-                    android:text="@string/profile.label.rssi"/>
-
-                <TextView
-                    android:id="@+id/item_rssi"
-                    style="@style/DeviceItemLabel.DeviceItemContent"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
-            </TableRow>
-        </LinearLayout>
     </TableLayout>
 
     <ImageView

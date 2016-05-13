@@ -17,10 +17,13 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
     private final int extraRssi;
 
 
-    public DeviceItem(BluetoothDevice bluetoothDevice, int rssi, String defaultDeviceName) {
+    private static final String UNKNOWN = GattAttributes.UNKNOWN;
+
+
+    public DeviceItem(BluetoothDevice bluetoothDevice, int rssi) {
         String name = bluetoothDevice.getName();
         if (Strings.isNullOrEmpty(name)) {
-            this.extraName = defaultDeviceName;
+            this.extraName = UNKNOWN;
         } else {
             this.extraName = bluetoothDevice.getName();
         }
@@ -31,27 +34,27 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
     }
 
 
-    public final String getExtraName() {
+    public final String getName() {
         return this.extraName;
     }
 
 
-    public final String getExtraAddress() {
+    public final String getAddress() {
         return this.extraAddress;
     }
 
 
-    public final String getExtraBondState() {
+    public final String getBondState() {
         return GattAttributes.getBond(extraBondState);
     }
 
 
-    public final String getExtraType() {
+    public final String getType() {
         return GattAttributes.getType(extraType);
     }
 
 
-    public final int getExtraRssi() {
+    public final int getRssi() {
         return this.extraRssi;
     }
 
@@ -62,7 +65,7 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
         if (getClass() != o.getClass()) return false;
 
         DeviceItem device = (DeviceItem) o;
-        return !(extraAddress != null ? !extraAddress.equals(device.getExtraAddress()) : device.getExtraAddress() != null);
+        return !(extraAddress != null ? !extraAddress.equals(device.getAddress()) : device.getAddress() != null);
     }
 
 
@@ -83,6 +86,6 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
 
 
     @Override public int compareTo(@NonNull final DeviceItem anotherDevice) {
-        return this.extraAddress.compareTo(anotherDevice.getExtraAddress());
+        return this.extraAddress.compareTo(anotherDevice.getAddress());
     }
 }

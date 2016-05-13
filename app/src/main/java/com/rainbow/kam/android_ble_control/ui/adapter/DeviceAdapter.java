@@ -8,15 +8,12 @@ import android.support.v7.widget.util.SortedListAdapterCallback;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -28,7 +25,7 @@ import butterknife.OnClick;
 /**
  * Created by kam6512 on 2015-10-14.
  */
-public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Animation.AnimationListener {
+public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final OnDeviceSelectListener onDeviceSelectListener;
 
     private final SortedListAdapterCallback<DeviceItem> sortedListAdapterCallback = new SortedListAdapterCallback<DeviceItem>(this) {
@@ -52,20 +49,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private final SortedList<DeviceItem> sortedList = new SortedList<>(DeviceItem.class, sortedListAdapterCallback);
 
-    private final Animation expandAnimation, collapseAnimation;
-
-    private DeviceViewHolder animateDeviceViewHolder;
-
 
     @Inject public DeviceAdapter(@NonNull Context context) {
         this.onDeviceSelectListener = (OnDeviceSelectListener) context;
-
-        expandAnimation = AnimationUtils.loadAnimation(context, R.anim.expand_device_item);
-        expandAnimation.setAnimationListener(this);
-        expandAnimation.setInterpolator(context, android.R.anim.anticipate_overshoot_interpolator);
-        collapseAnimation = AnimationUtils.loadAnimation(context, R.anim.collapse_device_item);
-        collapseAnimation.setAnimationListener(this);
-        collapseAnimation.setInterpolator(context, android.R.anim.anticipate_overshoot_interpolator);
     }
 
 
@@ -100,60 +86,26 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-    @Override public void onAnimationStart(@NonNull Animation animation) {
-        animateDeviceViewHolder.itemView.requestLayout();
-        if (animation == expandAnimation) {
-            animateDeviceViewHolder.expandGroup.setVisibility(View.VISIBLE);
-            animateDeviceViewHolder.expendImageView.setImageResource(R.drawable.ic_expand_less_black_24dp);
-        }
-    }
-
-
-    @Override public void onAnimationEnd(@NonNull Animation animation) {
-        animateDeviceViewHolder.itemView.requestLayout();
-        if (animation == collapseAnimation) {
-            animateDeviceViewHolder.expandGroup.setVisibility(View.GONE);
-            animateDeviceViewHolder.expendImageView.setImageResource(R.drawable.ic_expand_more_black_24dp);
-        }
-    }
-
-
-    @Override public void onAnimationRepeat(Animation animation) {
-    }
-
-
     public class DeviceViewHolder extends RecyclerView.ViewHolder {
 
         private DeviceItem deviceItem;
 
-        private final View itemView;
-
-        @Bind(R.id.item_name) TextView extraName;
-        @Bind(R.id.item_address) TextView extraAddress;
-        @Bind(R.id.item_bond) TextView extraBondState;
-        @Bind(R.id.item_type) TextView extraType;
-        @Bind(R.id.item_rssi) TextView extraRssi;
-
-        @Bind(R.id.row_expand) LinearLayout expandGroup;
-        @Bind(R.id.button_expand) ImageView expendImageView;
+        @Bind(R.id.item_name) TextView name;
+        @Bind(R.id.item_address) TextView address;
 
 
         public DeviceViewHolder(@NonNull final View itemView) {
             super(itemView);
-            this.itemView = itemView;
-            ButterKnife.bind(this, this.itemView);
+            ButterKnife.bind(this, itemView);
         }
 
 
         private void bindViews(@NonNull DeviceItem deviceItem) {
-            extraName.setText(deviceItem.getExtraName());
-            extraAddress.setText(deviceItem.getExtraAddress());
-            extraBondState.setText(String.valueOf(deviceItem.getExtraBondState()));
-            extraType.setText(String.valueOf(deviceItem.getExtraType()));
-            extraRssi.setText(String.valueOf(deviceItem.getExtraRssi()));
 
-            expandGroup.setVisibility(View.GONE);
-            expendImageView.setImageResource(R.drawable.ic_expand_more_black_24dp);
+            String deviceName = String.format(Locale.getDefault(), "%s (%s)", deviceItem.getName(), deviceItem.getType());
+
+            name.setText(deviceName);
+            address.setText(deviceItem.getAddress());
 
             this.deviceItem = deviceItem;
         }
@@ -162,31 +114,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @OnClick(R.id.device_item)
         public void clickDeviceItem() {
             onDeviceSelectListener.onDeviceSelect(deviceItem);
-        }
-
-
-        @OnClick(R.id.button_expand)
-        public void clickExpandIcon() {
-            animateDeviceViewHolder = this;
-            if (expandGroup.isShown()) {
-                collapsedView();
-            } else {
-                expandView();
-            }
-        }
-
-
-        private void expandView() {
-            expandAnimation.reset();
-            expandGroup.clearAnimation();
-            expandGroup.startAnimation(expandAnimation);
-        }
-
-
-        private void collapsedView() {
-            collapseAnimation.reset();
-            expandGroup.clearAnimation();
-            expandGroup.startAnimation(collapseAnimation);
         }
     }
 
