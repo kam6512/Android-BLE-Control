@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,16 +26,17 @@ import butterknife.OnClick;
  */
 public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final String uuidLabel;
+
     private static final int TYPE_SERVICE = 0;
     private static final int TYPE_CHARACTERISTIC = 1;
 
     private static int CURRENT_TYPE = TYPE_SERVICE;
 
-    private final ArrayList<Object> gattList = Lists.newArrayList();
+    private List<BluetoothGattService> bluetoothGattServices = Lists.newArrayList();
+    private List<BluetoothGattCharacteristic> bluetoothGattCharacteristics = Lists.newArrayList();
 
     private final OnGattItemClickListener onGattItemClickListener;
-
-    private final String uuidLabel;
 
 
     @Inject public ProfileAdapter(Context context) {
@@ -65,43 +65,47 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int type = getItemViewType(position);
         if (type == TYPE_SERVICE) {
             ServiceViewHolder serviceViewHolder = (ServiceViewHolder) holder;
-            serviceViewHolder.bindViews((BluetoothGattService) gattList.get(position));
+            serviceViewHolder.bindViews(bluetoothGattServices.get(position));
+
         } else if (type == TYPE_CHARACTERISTIC) {
             CharacteristicViewHolder characteristicViewHolder = (CharacteristicViewHolder) holder;
-            characteristicViewHolder.bindViews((BluetoothGattCharacteristic) gattList.get(position));
+            characteristicViewHolder.bindViews(bluetoothGattCharacteristics.get(position));
         }
     }
 
 
     @Override public int getItemCount() {
-        return gattList.size();
+        if (CURRENT_TYPE == TYPE_SERVICE) {
+            return bluetoothGattServices.size();
+        } else {
+            return bluetoothGattCharacteristics.size();
+        }
     }
 
 
     @Override public int getItemViewType(int position) {
-        Object o = gattList.get(position);
-        if (o instanceof BluetoothGattService) {
-            return TYPE_SERVICE;
-        } else if (o instanceof BluetoothGattCharacteristic) {
-            return TYPE_CHARACTERISTIC;
-        }
-        return TYPE_SERVICE;
+        return CURRENT_TYPE;
     }
 
 
     public void setServiceList(List<BluetoothGattService> bluetoothGattServices) {
-        gattList.clear();
-        gattList.addAll(bluetoothGattServices);
-        notifyDataSetChanged();
-        CURRENT_TYPE = TYPE_SERVICE;
+        this.bluetoothGattServices.clear();
+        this.bluetoothGattServices.addAll(bluetoothGattServices);
+        showServiceList();
     }
 
 
     public void setCharacteristicList(List<BluetoothGattCharacteristic> bluetoothGattCharacteristics) {
-        gattList.clear();
-        gattList.addAll(bluetoothGattCharacteristics);
-        notifyDataSetChanged();
+        this.bluetoothGattCharacteristics.clear();
+        this.bluetoothGattCharacteristics.addAll(bluetoothGattCharacteristics);
         CURRENT_TYPE = TYPE_CHARACTERISTIC;
+        notifyDataSetChanged();
+    }
+
+
+    public void showServiceList() {
+        CURRENT_TYPE = TYPE_SERVICE;
+        notifyDataSetChanged();
     }
 
 
@@ -138,7 +142,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         @OnClick(R.id.profile_parent_list_item_service)
         public void onServiceSelect() {
-            onGattItemClickListener.onServiceClickListener(getLayoutPosition());
+            onGattItemClickListener.onServiceClickListener(bluetoothGattServices.get(getLayoutPosition()));
         }
     }
 
@@ -160,12 +164,13 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             uuid = uuidLabel + uuid.substring(4, 8);
             characteristicTitle.setText(name);
             characteristicUuid.setText(uuid);
+
         }
 
 
         @OnClick(R.id.profile_child_list_item_characteristic)
         public void onCharacteristicSelect() {
-            onGattItemClickListener.onCharacteristicClickListener(getLayoutPosition());
+            onGattItemClickListener.onCharacteristicClickListener(bluetoothGattCharacteristics.get(getLayoutPosition()));
         }
     }
 }

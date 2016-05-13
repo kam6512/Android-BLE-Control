@@ -1,4 +1,4 @@
-package com.rainbow.kam.android_ble_control.data.scan;
+package com.rainbow.kam.android_ble_control.data;
 
 import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
@@ -24,6 +24,8 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
         String name = bluetoothDevice.getName();
         if (Strings.isNullOrEmpty(name)) {
             this.name = UNKNOWN;
+        } else {
+            this.name = name;
         }
         this.address = bluetoothDevice.getAddress();
         this.bondState = bluetoothDevice.getBondState();

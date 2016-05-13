@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
-import com.rainbow.kam.android_ble_control.ui.adapter.profile.ProfileAdapter;
 import com.rainbow.kam.android_ble_control.ui.adapter.profile.OnGattItemClickListener;
+import com.rainbow.kam.android_ble_control.ui.adapter.profile.ProfileAdapter;
 import com.rainbow.kam.android_ble_control.ui.view.ControlView;
 import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
@@ -34,8 +34,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -82,8 +80,8 @@ public class DeviceProfileActivity extends BaseActivity implements
 
     private GattManager gattManager;
 
-    private List<BluetoothGattService> bluetoothGattServices;
-    private List<BluetoothGattCharacteristic> bluetoothGattCharacteristics;
+//    private List<BluetoothGattService> bluetoothGattServices;
+//    private List<BluetoothGattCharacteristic> bluetoothGattCharacteristics;
 
     private BluetoothGattCharacteristic controlCharacteristic;
 
@@ -191,7 +189,7 @@ public class DeviceProfileActivity extends BaseActivity implements
                 if (profileAdapter.isBackPressedAvailable()) {
                     disconnectDevice();
                 } else {
-                    showServiceList();
+                    profileAdapter.showServiceList();
                 }
             }
         } else {
@@ -205,17 +203,7 @@ public class DeviceProfileActivity extends BaseActivity implements
     }
 
 
-    @UiThread void showServiceList() {
-        profileAdapter.setServiceList(bluetoothGattServices);
-    }
-
-
-    @UiThread void showCharacteristicList() {
-        profileAdapter.setCharacteristicList(bluetoothGattCharacteristics);
-    }
-
-
-    @Override public void onControlReady() {
+    @UiThread @Override public void onControlReady() {
         controlView.init(deviceName, deviceAddress, controlCharacteristic);
     }
 
@@ -246,9 +234,9 @@ public class DeviceProfileActivity extends BaseActivity implements
     }
 
 
-    @Override public void onServicesFound(BluetoothGatt bluetoothGatt) {
-        bluetoothGattServices = bluetoothGatt.getServices();
-        showServiceList();
+    @UiThread @Override
+    public void onServicesFound(BluetoothGatt bluetoothGatt) {
+        profileAdapter.setServiceList(bluetoothGatt.getServices());
     }
 
 
@@ -257,12 +245,14 @@ public class DeviceProfileActivity extends BaseActivity implements
     }
 
 
-    @Override public void onReadSuccess(final BluetoothGattCharacteristic ch) {
+    @UiThread @Override
+    public void onReadSuccess(final BluetoothGattCharacteristic ch) {
         controlView.newValueForCharacteristic(ch);
     }
 
 
-    @Override public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
+    @UiThread @Override
+    public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
         controlView.newValueForCharacteristic(ch);
     }
 
@@ -283,7 +273,7 @@ public class DeviceProfileActivity extends BaseActivity implements
     }
 
 
-    @Override public void onError(GattException e) {
+    @UiThread @Override public void onError(GattException e) {
         showExceptionMessage(e.getMessage());
         if (e instanceof ReadCharacteristicException) {
             controlView.setFail();
@@ -291,14 +281,15 @@ public class DeviceProfileActivity extends BaseActivity implements
     }
 
 
-    @Override public void onServiceClickListener(int position) {
-        bluetoothGattCharacteristics = bluetoothGattServices.get(position).getCharacteristics();
-        showCharacteristicList();
+    @UiThread @Override
+    public void onServiceClickListener(BluetoothGattService bluetoothGattService) {
+        profileAdapter.setCharacteristicList(bluetoothGattService.getCharacteristics());
     }
 
 
-    @Override public void onCharacteristicClickListener(int position) {
-        controlCharacteristic = bluetoothGattCharacteristics.get(position);
+    @UiThread @Override
+    public void onCharacteristicClickListener(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
+        controlCharacteristic = bluetoothGattCharacteristic;
         recyclerView.setVisibility(View.GONE);
         controlView.setVisibility(View.VISIBLE);
     }

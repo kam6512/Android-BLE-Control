@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.android_ble_control.data.scan.DeviceItem;
+import com.rainbow.kam.android_ble_control.data.DeviceItem;
 
 import java.util.Locale;
 import java.util.Objects;
