@@ -39,6 +39,16 @@ public class ControlView
         CompoundButton.OnCheckedChangeListener {
 
 
+    private BluetoothGattCharacteristic bluetoothGattCharacteristic;
+    private String name;
+    private String address;
+    private String uuid;
+
+    private String hexValue;
+    private String strValue;
+    private String lastUpdateTime;
+    private boolean notificationEnabled;
+
     @ViewById(R.id.characteristic_device_name) TextView deviceName;
     @ViewById(R.id.characteristic_device_address) TextView deviceAddress;
 
@@ -60,19 +70,24 @@ public class ControlView
     @ViewById(R.id.control_read_btn) Button readBtn;
     @ViewById(R.id.control_write_btn) Button writeBtn;
 
-    @StringRes(R.string.profile_fail) String profileFail;
+    @StringRes(R.string.control_fail) String fail;
+    @StringRes(R.string.control_none) String none;
+    @StringRes(R.string.control_empty) String empty;
 
-    @StringRes(R.string.profile_timestamp) String profileTimeStamp;
+    @StringRes(R.string.control_format_clean) String cleaningFormat;
+    @StringRes(R.string.control_format_UUID) String uuidFormat;
+    @StringRes(R.string.control_format_hex) String hexFormat;
+    @StringRes(R.string.control_format_string) String stringFormat;
 
-    private BluetoothGattCharacteristic bluetoothGattCharacteristic;
-    private String name;
-    private String address;
-    private String uuid;
+    @StringRes(R.string.profile_timestamp) String timeStamp;
+    @StringRes(R.string.control_format_properties) String propertiesFormat;
 
-    private String hexValue;
-    private String strValue;
-    private String lastUpdateTime;
-    private boolean notificationEnabled;
+    @StringRes(R.string.control_properties_read) String propertiesRead;
+    @StringRes(R.string.control_properties_write) String propertiesWrite;
+    @StringRes(R.string.control_properties_notify) String propertiesNotify;
+    @StringRes(R.string.control_properties_indicate) String propertiesIndicate;
+    @StringRes(R.string.control_properties_wnr) String propertiesWriteNoResponse;
+
 
     private final OnControlListener onControlListener;
 
@@ -102,7 +117,7 @@ public class ControlView
             onControlListener.onControlReady();
         } else {
             notificationEnabled = false;
-//            onControlListener.setNotification(false);
+//            onControlListener.setNotification(notificationEnabled);
         }
     }
 
@@ -119,9 +134,9 @@ public class ControlView
         this.address = address;
         this.bluetoothGattCharacteristic = characteristic;
         if (!Objects.equals(uuid, bluetoothGattCharacteristic.getUuid().toString())) {
-            hexValue = "";
-            strValue = "";
-            lastUpdateTime = "";
+            hexValue = none;
+            strValue = none;
+            lastUpdateTime = none;
             notificationEnabled = false;
             uuid = bluetoothGattCharacteristic.getUuid().toString();
         }
@@ -146,23 +161,22 @@ public class ControlView
 
             int props = bluetoothGattCharacteristic.getProperties();
             StringBuilder propertiesString = new StringBuilder();
-            propertiesString.append(String.format("0x%04X [ ", props));
+            propertiesString.append(String.format(propertiesFormat, props));
             if ((props & BluetoothGattCharacteristic.PROPERTY_READ) != 0) {
-                propertiesString.append("READ ");
+                propertiesString.append(propertiesRead);
             }
             if ((props & BluetoothGattCharacteristic.PROPERTY_WRITE) != 0) {
-                propertiesString.append("WRITE ");
+                propertiesString.append(propertiesWrite);
             }
             if ((props & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
-                propertiesString.append("NOTIFY ");
+                propertiesString.append(propertiesNotify);
             }
             if ((props & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0) {
-                propertiesString.append("INDICATE ");
+                propertiesString.append(propertiesIndicate);
             }
             if ((props & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0) {
-                propertiesString.append("WRITE_NO_RESPONSE ");
+                propertiesString.append(propertiesWriteNoResponse);
             }
-            propertiesString.append(propertiesString).append("]");
 
             charProperties.setText(propertiesString.toString());
 
@@ -193,11 +207,11 @@ public class ControlView
         if (rawValue != null && rawValue.length > 0) {
             final StringBuilder stringBuilder = new StringBuilder(rawValue.length);
             for (byte byteChar : rawValue) {
-                stringBuilder.append(String.format("%02X", byteChar));
+                stringBuilder.append(String.format(hexFormat, byteChar));
             }
-            hexValue = "0x" + stringBuilder.toString();
+            hexValue = uuidFormat + stringBuilder.toString();
         } else {
-            hexValue = "";
+            hexValue = none;
         }
     }
 
@@ -207,7 +221,7 @@ public class ControlView
             final StringBuilder stringBuilder = new StringBuilder(rawValue.length);
             for (byte byteChar : rawValue) {
                 try {
-                    stringBuilder.append(String.format("%c", byteChar));
+                    stringBuilder.append(String.format(stringFormat, byteChar));
                 } catch (IllegalFormatCodePointException e) {
                     stringBuilder.append((char) byteChar);
                 }
@@ -218,7 +232,7 @@ public class ControlView
 
 
     private void setTimeStamp() {
-        lastUpdateTime = new SimpleDateFormat(profileTimeStamp, Locale.getDefault()).format(new Date().getTime());
+        lastUpdateTime = new SimpleDateFormat(timeStamp, Locale.getDefault()).format(new Date().getTime());
     }
 
 
@@ -232,9 +246,9 @@ public class ControlView
 
 
     public void setFail() {
-        hexValue = profileFail;
-        strValue = profileFail;
-        lastUpdateTime = profileFail;
+        hexValue = fail;
+        strValue = fail;
+        lastUpdateTime = fail;
         bindView();
     }
 
@@ -256,7 +270,7 @@ public class ControlView
                     }
 
                 } else {
-                    Snackbar.make(v, "value is empty!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(v, R.string.control_empty, Snackbar.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -265,14 +279,12 @@ public class ControlView
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.control_notification_switcher:
-                if (isChecked == notificationEnabled) {
-                    return;
-                }
-                onControlListener.setNotification(isChecked);
-                notificationEnabled = isChecked;
-                break;
+        if (buttonView.getId() == R.id.control_notification_switcher) {
+            if (isChecked == notificationEnabled) {
+                return;
+            }
+            onControlListener.setNotification(isChecked);
+            notificationEnabled = isChecked;
         }
     }
 
@@ -284,7 +296,7 @@ public class ControlView
 
 
     private String makeHexClean(String hex) {
-        return hex.toLowerCase(Locale.getDefault()).replaceAll("[^[0-9][a-f]]", "");
+        return hex.toLowerCase(Locale.getDefault()).replaceAll(cleaningFormat, "");
     }
 
 
@@ -305,24 +317,13 @@ public class ControlView
                 }
             }
         }
-        bytes[length - 1] = decodeValue(String.format("%02x", checksum));
+        bytes[length - 1] = decodeValue(String.format(hexFormat, checksum));
 
         return bytes;
     }
 
 
     private byte decodeValue(String value) {
-        return Long.decode("0x" + value).byteValue();
-    }
-
-
-    public interface OnControlListener {
-        void onControlReady();
-
-        void setNotification(boolean isNotificationEnable);
-
-        void setReadValue();
-
-        void setWriteValue(byte[] data);
+        return Long.decode(uuidFormat + value).byteValue();
     }
 }

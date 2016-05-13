@@ -24,6 +24,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+
+
+
+
     <style name="DeviceItemTableRow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -77,8 +81,14 @@
         <item name="android:background">@null</item>
     </style>
 
+
+
+
+
+
+
     <style name="DeviceTableRaw">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@null</item>
     </style>
@@ -125,7 +135,7 @@
         <item name="android:layout_marginBottom">@dimen/deviceItem_margin</item>
     </style>
 
-    <style name="DeviceCharacteristicButton">
+    <style name="ControlBtn">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">2dp</item>

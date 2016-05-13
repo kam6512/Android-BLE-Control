@@ -36,7 +36,8 @@
     <string name="profile.button.read">Read</string>
     <string name="profile.button.write">Write</string>
 
-    <string name="profile.fail">Fail!</string>
+
+    <string name="profile.error">ERROR!</string>
 
     <string name="profile.characteristics.name">profile.characteristics.name</string>
     <string name="profile.characteristics.UUID">profile.characteristics.UUID</string>
@@ -46,6 +47,24 @@
     <string name="profile.service.type">profile.service.type</string>
 
     <string name="device.name.format" formatted="false">%s (%s)</string>
+
+
+    <string name="control.none">NONE</string>
+    <string name="control.fail">Fail!</string>
+    <string name="control.empty">EMPTY VALUE</string>
+
+    <string name="control.format.UUID">0x</string>
+    <string name="control.format.clean" formatted="false">[^[0–9][a-f]]</string>
+    <string name="control.format.hex" formatted="false">%02X</string>
+    <string name="control.format.string" formatted="false">%c</string>
+
+    <string name="control.format.properties" formatted="false">0x%04X - \u0020</string>
+
+    <string name="control.properties.read" >READ \u0020</string>
+    <string name="control.properties.write" >WRITE \u0020</string>
+    <string name="control.properties.notify" >NOTIFY \u0020</string>
+    <string name="control.properties.indicate" >INDICATE \u0020</string>
+    <string name="control.properties.wnr" >WRITE_NO_RESPONSE \u0020</string>
 
 
 </resources>
