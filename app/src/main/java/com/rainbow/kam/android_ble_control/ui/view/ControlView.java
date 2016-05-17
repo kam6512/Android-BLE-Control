@@ -166,7 +166,7 @@ public class ControlView extends NestedScrollView {
     @UiThread void initPropsView() {
         StringBuilder propertiesString = new StringBuilder();
 
-        propertiesString.append(String.format(propertiesFormat, propertiesString));
+        propertiesString.append(String.format(propertiesFormat, properties));
 
         if (propertiesEnabled(PROPERTY_READ)) {
             propertiesString.append(propertiesRead);
