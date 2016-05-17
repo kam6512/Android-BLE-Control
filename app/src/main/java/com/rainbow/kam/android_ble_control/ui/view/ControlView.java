@@ -17,7 +17,8 @@ import android.widget.ToggleButton;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 
-import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.CheckedChange;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -25,24 +26,23 @@ import org.androidannotations.annotations.res.StringRes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.IllegalFormatCodePointException;
 import java.util.Locale;
 import java.util.Objects;
+
+import static android.bluetooth.BluetoothGattCharacteristic.*;
 
 /**
  * Created by kam6512 on 2015-11-02.
  */
 @EViewGroup(R.layout.v_profile_control)
-public class ControlView
-        extends NestedScrollView
-        implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+public class ControlView extends NestedScrollView {
 
 
     private BluetoothGattCharacteristic bluetoothGattCharacteristic;
     private String name;
     private String address;
     private String uuid;
+    private int properties;
 
     private String hexValue;
     private String strValue;
@@ -69,6 +69,7 @@ public class ControlView
     @ViewById(R.id.control_notification_switcher) ToggleButton notificationBtn;
     @ViewById(R.id.control_read_btn) Button readBtn;
     @ViewById(R.id.control_write_btn) Button writeBtn;
+
 
     @StringRes(R.string.control_fail) String fail;
     @StringRes(R.string.control_none) String none;
@@ -117,122 +118,124 @@ public class ControlView
             onControlListener.onControlReady();
         } else {
             notificationEnabled = false;
-//            onControlListener.setNotification(notificationEnabled);
         }
     }
 
 
-    @AfterViews void setBtn() {
-        readBtn.setOnClickListener(this);
-        writeBtn.setOnClickListener(this);
-        notificationBtn.setOnCheckedChangeListener(this);
-    }
-
-
-    public void init(String name, String address, BluetoothGattCharacteristic characteristic) {
+    public void initValue(String name, String address, BluetoothGattCharacteristic characteristic) {
         this.name = name;
         this.address = address;
         this.bluetoothGattCharacteristic = characteristic;
-        if (!Objects.equals(uuid, bluetoothGattCharacteristic.getUuid().toString())) {
+
+        if (!isControlCharacteristicDuplicated()) {
             hexValue = none;
             strValue = none;
             lastUpdateTime = none;
             notificationEnabled = false;
             uuid = bluetoothGattCharacteristic.getUuid().toString();
+            properties = bluetoothGattCharacteristic.getProperties();
         }
-        initViewValue();
+        if (getVisibility() == VISIBLE) {
+            initCharacteristicInfoView();
+            initPropsView();
+        }
         bindView();
     }
 
 
-    @UiThread void initViewValue() {
-        if (getVisibility() == VISIBLE) {
-            deviceName.setText(name);
-            deviceAddress.setText(address);
+    private boolean isControlCharacteristicDuplicated() {
+        return Objects.equals(uuid, bluetoothGattCharacteristic.getUuid().toString());
+    }
 
-            String service = bluetoothGattCharacteristic.getService().getUuid().toString().toLowerCase(Locale.getDefault());
-            serviceUuid.setText(service);
-            serviceName.setText(GattAttributes.resolveServiceName(service.substring(0, 8)));
 
-            String characteristic = bluetoothGattCharacteristic.getUuid().toString().toLowerCase(Locale.getDefault());
-            charUuid.setText(characteristic);
-            charName.setText(GattAttributes.resolveCharacteristicName(characteristic.substring(0, 8)));
-            charDataType.setText(GattAttributes.resolveValueTypeDescription(bluetoothGattCharacteristic));
+    @UiThread void initCharacteristicInfoView() {
+        deviceName.setText(name);
+        deviceAddress.setText(address);
 
-            int props = bluetoothGattCharacteristic.getProperties();
-            StringBuilder propertiesString = new StringBuilder();
-            propertiesString.append(String.format(propertiesFormat, props));
-            if ((props & BluetoothGattCharacteristic.PROPERTY_READ) != 0) {
-                propertiesString.append(propertiesRead);
-            }
-            if ((props & BluetoothGattCharacteristic.PROPERTY_WRITE) != 0) {
-                propertiesString.append(propertiesWrite);
-            }
-            if ((props & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
-                propertiesString.append(propertiesNotify);
-            }
-            if ((props & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0) {
-                propertiesString.append(propertiesIndicate);
-            }
-            if ((props & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0) {
-                propertiesString.append(propertiesWriteNoResponse);
-            }
+        String service = bluetoothGattCharacteristic.getService().getUuid().toString().toLowerCase(Locale.getDefault());
+        serviceUuid.setText(service);
+        serviceName.setText(GattAttributes.resolveServiceName(service));
 
-            charProperties.setText(propertiesString.toString());
+        String characteristic = bluetoothGattCharacteristic.getUuid().toString().toLowerCase(Locale.getDefault());
+        charUuid.setText(characteristic);
+        charName.setText(GattAttributes.resolveCharacteristicName(characteristic));
+        charDataType.setText(GattAttributes.resolveValueTypeDescription(bluetoothGattCharacteristic));
+    }
 
-            notificationBtn.setEnabled((props & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0);
-            notificationBtn.setChecked(notificationEnabled);
 
-            readBtn.setEnabled((props & BluetoothGattCharacteristic.PROPERTY_READ) != 0);
-            writeBtn.setEnabled((props & (BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)) != 0);
-            charHexValue.setEnabled(writeBtn.isEnabled());
+    @UiThread void initPropsView() {
+        StringBuilder propertiesString = new StringBuilder();
+
+        propertiesString.append(String.format(propertiesFormat, propertiesString));
+
+        if (propertiesEnabled(PROPERTY_READ)) {
+            propertiesString.append(propertiesRead);
         }
+        if (propertiesEnabled(PROPERTY_WRITE)) {
+            propertiesString.append(propertiesWrite);
+        }
+        if (propertiesEnabled(PROPERTY_NOTIFY)) {
+            propertiesString.append(propertiesNotify);
+        }
+        if (propertiesEnabled(PROPERTY_INDICATE)) {
+            propertiesString.append(propertiesIndicate);
+        }
+        if (propertiesEnabled(PROPERTY_WRITE_NO_RESPONSE)) {
+            propertiesString.append(propertiesWriteNoResponse);
+        }
+        charProperties.setText(propertiesString.toString());
+
+        notificationBtn.setEnabled(propertiesEnabled(PROPERTY_NOTIFY));
+        notificationBtn.setChecked(notificationEnabled);
+        readBtn.setEnabled(propertiesEnabled(PROPERTY_READ));
+        writeBtn.setEnabled(propertiesEnabled(PROPERTY_WRITE | PROPERTY_WRITE_NO_RESPONSE));
+        charHexValue.setEnabled(writeBtn.isEnabled());
+    }
+
+
+    private boolean propertiesEnabled(int props) {
+        return (properties & props) != 0;
     }
 
 
     @UiThread
-    public void newValueForCharacteristic(final BluetoothGattCharacteristic bluetoothGattCharacteristic) {
+    public void showNewValue(final BluetoothGattCharacteristic bluetoothGattCharacteristic) {
 
         byte[] rawValue = bluetoothGattCharacteristic.getValue();
 
-        setStrValue(rawValue);
-        setHexValue(rawValue);
         setTimeStamp();
 
-        bindView();
-    }
-
-
-    private void setHexValue(byte[] rawValue) {
         if (rawValue != null && rawValue.length > 0) {
-            final StringBuilder stringBuilder = new StringBuilder(rawValue.length);
-            for (byte byteChar : rawValue) {
-                stringBuilder.append(String.format(hexFormat, byteChar));
-            }
-            hexValue = uuidFormat + stringBuilder.toString();
+            hexValue = uuidFormat + getValue(rawValue, hexFormat);
+            strValue = getValue(rawValue, stringFormat);
         } else {
             hexValue = none;
+            strValue = none;
         }
-    }
 
-
-    private void setStrValue(byte[] rawValue) {
-        if (rawValue.length > 0) {
-            final StringBuilder stringBuilder = new StringBuilder(rawValue.length);
-            for (byte byteChar : rawValue) {
-                try {
-                    stringBuilder.append(String.format(stringFormat, byteChar));
-                } catch (IllegalFormatCodePointException e) {
-                    stringBuilder.append((char) byteChar);
-                }
-            }
-            this.strValue = stringBuilder.toString();
-        }
+        bindView();
     }
 
 
     private void setTimeStamp() {
         lastUpdateTime = new SimpleDateFormat(timeStamp, Locale.getDefault()).format(new Date().getTime());
+    }
+
+
+    private String getValue(byte[] rawValue, String format) {
+        final StringBuilder stringBuilder = new StringBuilder(rawValue.length);
+        for (byte byteChar : rawValue) {
+            stringBuilder.append(String.format(format, byteChar));
+        }
+        return stringBuilder.toString();
+    }
+
+
+    public void showFail() {
+        hexValue = fail;
+        strValue = fail;
+        lastUpdateTime = fail;
+        bindView();
     }
 
 
@@ -245,69 +248,46 @@ public class ControlView
     }
 
 
-    public void setFail() {
-        hexValue = fail;
-        strValue = fail;
-        lastUpdateTime = fail;
-        bindView();
+    @Click(R.id.control_read_btn) void clickReadBtn() {
+        onControlListener.setReadValue();
     }
 
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.control_read_btn:
-                onControlListener.setReadValue();
-                break;
-            case R.id.control_write_btn:
-                String newValue = charHexValue.getText().toString().toLowerCase(Locale.getDefault());
-                if (!TextUtils.isEmpty(newValue) || newValue.length() > 1) {
-                    try {
-                        byte[] dataToWrite = getBytes(newValue);
-                        onControlListener.setWriteValue(dataToWrite);
-                    } catch (StringIndexOutOfBoundsException e) {
-                        onControlListener.setWriteValue(null);
-                    }
-
-                } else {
-                    Snackbar.make(v, R.string.control_empty, Snackbar.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
-
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (buttonView.getId() == R.id.control_notification_switcher) {
-            if (isChecked == notificationEnabled) {
-                return;
+    @Click(R.id.control_write_btn) void clickWriteBtn() {
+        String newValue = charHexValue.getText().toString().toLowerCase(Locale.getDefault());
+        if (!TextUtils.isEmpty(newValue) || newValue.length() > 1) {
+            try {
+                byte[] dataToWrite = getBytes(newValue);
+                onControlListener.setWriteValue(dataToWrite);
+            } catch (StringIndexOutOfBoundsException e) {
+                onControlListener.setWriteValue(new byte[0]);
             }
-            onControlListener.setNotification(isChecked);
-            notificationEnabled = isChecked;
+
+        } else {
+            Snackbar.make(this, R.string.control_empty, Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+
+    @CheckedChange(R.id.control_notification_switcher)
+    void clickNotificationBtn(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked == notificationEnabled) {
+            return;
+        }
+        onControlListener.setNotification(isChecked);
+        notificationEnabled = isChecked;
     }
 
 
     private byte[] getBytes(String hex) {
-        hex = makeHexClean(hex);
-        return parseHexStringToBytes(hex);
-    }
-
-
-    private String makeHexClean(String hex) {
-        return hex.toLowerCase(Locale.getDefault()).replaceAll(cleaningFormat, "");
-    }
-
-
-    private byte[] parseHexStringToBytes(String hex) {
+        hex = hex.toLowerCase(Locale.getDefault()).replaceAll(cleaningFormat, "");
         byte[] bytes = new byte[(hex.length() / 2) + 1];
 
         int length = bytes.length;
         int checksum = 0;
 
         for (int i = 0; i < length - 1; ++i) {
-            bytes[i] = decodeValue(hex.substring(i * 2, i * 2 + 2));
+            bytes[i] = Long.decode(uuidFormat + hex.substring(i * 2, i * 2 + 2)).byteValue();
 
             if (i > 1 && i <= length - 2) {
                 if (bytes[i] < 0x00) {
@@ -317,13 +297,8 @@ public class ControlView
                 }
             }
         }
-        bytes[length - 1] = decodeValue(String.format(hexFormat, checksum));
+        bytes[length - 1] = Long.decode(uuidFormat + String.format(hexFormat, checksum)).byteValue();
 
         return bytes;
-    }
-
-
-    private byte decodeValue(String value) {
-        return Long.decode(uuidFormat + value).byteValue();
     }
 }
