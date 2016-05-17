@@ -23,11 +23,11 @@ import com.rainbow.kam.android_ble_control.ui.adapter.profile.OnGattItemClickLis
 import com.rainbow.kam.android_ble_control.ui.adapter.profile.ProfileAdapter;
 import com.rainbow.kam.android_ble_control.ui.view.ControlView;
 import com.rainbow.kam.android_ble_control.ui.view.OnControlListener;
-import com.rainbow.kam.ble_gatt_manager.legacy.BluetoothHelper;
+import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattManager;
-import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.GattException;
-import com.rainbow.kam.ble_gatt_manager.legacy.exceptions.details.ReadCharacteristicException;
+import com.rainbow.kam.ble_gatt_manager.exceptions.GattException;
+import com.rainbow.kam.ble_gatt_manager.exceptions.details.ReadCharacteristicException;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;

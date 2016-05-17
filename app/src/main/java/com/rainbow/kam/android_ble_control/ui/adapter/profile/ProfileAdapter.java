@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.ble_gatt_manager.legacy.GattAttributes;
+import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 
 import java.util.List;
 
