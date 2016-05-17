@@ -16,18 +16,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.rainbow.kam.android_ble_control.BuildConfig;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
-import com.rainbow.kam.android_ble_control.data.DeviceItem;
 import com.rainbow.kam.android_ble_control.ui.adapter.profile.OnGattItemClickListener;
 import com.rainbow.kam.android_ble_control.ui.adapter.profile.ProfileAdapter;
 import com.rainbow.kam.android_ble_control.ui.view.ControlView;
 import com.rainbow.kam.android_ble_control.ui.view.OnControlListener;
 import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
-import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
-import com.rainbow.kam.ble_gatt_manager.legacy.GattManager;
 import com.rainbow.kam.ble_gatt_manager.exceptions.GattException;
 import com.rainbow.kam.ble_gatt_manager.exceptions.details.ReadCharacteristicException;
+import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
+import com.rainbow.kam.ble_gatt_manager.legacy.GattManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -67,8 +67,8 @@ public class DeviceProfileActivity extends BaseActivity implements
     @StringRes(R.string.bt_disconnected) String disconnectedLabel;
 
 
-    @Extra(DeviceItem.KEY_DEVICE_NAME) String deviceName;
-    @Extra(DeviceItem.KEY_DEVICE_ADDRESS) String deviceAddress;
+    @Extra(BuildConfig.KEY_DEVICE_NAME) String deviceName;
+    @Extra(BuildConfig.KEY_DEVICE_ADDRESS) String deviceAddress;
     private String deviceRSSI;
 
     @ViewById(R.id.profile_root) CoordinatorLayout rootLayout;

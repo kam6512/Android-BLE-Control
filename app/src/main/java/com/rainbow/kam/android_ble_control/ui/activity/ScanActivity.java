@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.github.pwittchen.reactivebeacons.library.ReactiveBeacons;
+import com.rainbow.kam.android_ble_control.BuildConfig;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
@@ -102,8 +103,8 @@ public class ScanActivity extends BaseActivity implements
         Observable.just(this)
                 .map(activity -> {
                     Intent commandIntent = new Intent(activity, DeviceProfileActivity_.class);
-                    commandIntent.putExtra(DeviceItem.KEY_DEVICE_NAME, device.getName());
-                    commandIntent.putExtra(DeviceItem.KEY_DEVICE_ADDRESS, device.getAddress());
+                    commandIntent.putExtra(BuildConfig.KEY_DEVICE_NAME, device.getName());
+                    commandIntent.putExtra(BuildConfig.KEY_DEVICE_ADDRESS, device.getAddress());
                     return commandIntent;
                 })
                 .subscribe(this::startActivity)

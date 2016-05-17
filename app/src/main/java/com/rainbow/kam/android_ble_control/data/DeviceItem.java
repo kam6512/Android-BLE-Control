@@ -11,9 +11,6 @@ import com.rainbow.kam.ble_gatt_manager.GattAttributes;
  */
 public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
 
-    public static final String KEY_DEVICE_NAME = "BLE_DEVICE_NAME";
-    public static final String KEY_DEVICE_ADDRESS = "BLE_DEVICE_ADDRESS";
-
     private String name;
     private final String address;
     private final int bondState;
