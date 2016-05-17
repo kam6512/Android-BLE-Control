@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.data.DeviceItem;
+import com.rainbow.kam.android_ble_control.ui.adapter.ViewHolder;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -26,7 +27,7 @@ import butterknife.OnClick;
 /**
  * Created by kam6512 on 2015-10-14.
  */
-public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class DeviceAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final OnDeviceSelectListener onDeviceSelectListener;
 
     private final SortedListAdapterCallback<DeviceItem> deviceListAdapterCallback = new SortedListAdapterCallback<DeviceItem>(this) {
@@ -57,7 +58,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
     @Override @NonNull
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View root = layoutInflater.inflate(R.layout.i_bluetooth_device, parent, false);
         return new DeviceViewHolder(root);
@@ -65,9 +66,8 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        DeviceViewHolder deviceViewHolder = (DeviceViewHolder) holder;
-        deviceViewHolder.bindViews(deviceList.get(position));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.bindViews(deviceList.get(position));
     }
 
 
@@ -86,7 +86,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
-    public class DeviceViewHolder extends RecyclerView.ViewHolder {
+    public class DeviceViewHolder extends ViewHolder {
 
         private DeviceItem deviceItem;
 
@@ -101,17 +101,16 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
 
-        private void bindViews(@NonNull DeviceItem deviceItem) {
+        public void bindViews(@NonNull DeviceItem deviceItem) {
+            this.deviceItem = deviceItem;
             String deviceName = String.format(Locale.getDefault(), deviceNameFormat, deviceItem.getName(), deviceItem.getType());
-
             name.setText(deviceName);
             address.setText(deviceItem.getAddress());
 
-            this.deviceItem = deviceItem;
         }
 
 
-        @OnClick(R.id.device_item) public void clickDeviceItem() {
+        @OnClick(R.id.device_item) void clickDeviceItem() {
             onDeviceSelectListener.onDeviceSelect(deviceItem);
         }
     }
