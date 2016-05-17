@@ -2,7 +2,6 @@ package com.rainbow.kam.android_ble_control.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -43,6 +42,7 @@ public class ScanActivity extends BaseActivity implements
 
     @ViewById(R.id.scan_root) SwipeRefreshLayout refreshScanLayout;
     @ViewById(R.id.device_list) RecyclerView deviceList;
+    private Snackbar scanEmptySnackBar;
 
     @Inject DeviceAdapter deviceAdapter;
 
@@ -53,11 +53,6 @@ public class ScanActivity extends BaseActivity implements
 
     @Override protected void injectComponent(ActivityComponent component) {
         component.inject(this);
-    }
-
-
-    @Override protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         reactiveBeacons = new ReactiveBeacons(this);
     }
 
@@ -70,11 +65,8 @@ public class ScanActivity extends BaseActivity implements
 
     @Override protected void onPause() {
         super.onPause();
-        if (beaconSubscription != null && !beaconSubscription.isUnsubscribed()) {
-            beaconSubscription.unsubscribe();
-        }
-        deviceAdapter.clear();
         stopScan();
+        refreshScanLayout.setRefreshing(false);
     }
 
 
@@ -91,10 +83,7 @@ public class ScanActivity extends BaseActivity implements
 
 
     @Override public void onRefresh() {
-        if (!beaconSubscription.isUnsubscribed()) {
-            beaconSubscription.unsubscribe();
-        }
-        deviceAdapter.clear();
+        stopScan();
         startScan();
     }
 
@@ -120,22 +109,54 @@ public class ScanActivity extends BaseActivity implements
     }
 
 
+    @AfterViews void setEmptySnackBar() {
+        scanEmptySnackBar = Snackbar.make(refreshScanLayout, R.string.scan_none_snack_title, Snackbar.LENGTH_INDEFINITE).setAction(R.string.scan_none_snack_label, v -> {
+            startScan();
+        }).setCallback(new Snackbar.Callback() {
+            @Override public void onDismissed(Snackbar snackbar, int event) {
+                super.onDismissed(snackbar, event);
+                startScan();
+            }
+
+
+            @Override public void onShown(Snackbar snackbar) {
+                super.onShown(snackbar);
+                if (!refreshScanLayout.isRefreshing()) {
+                    refreshScanLayout.setRefreshing(false);
+                }
+            }
+        });
+    }
+
+
     private void startScan() {
-        if (!canObserveBeacons()) {
-            return;
+        if (canObserveBeacons()) {
+            beaconSubscription = reactiveBeacons.observe()
+                    .take(5, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(beacon -> {
+                        if (!refreshScanLayout.isRefreshing()) {
+                            refreshScanLayout.setRefreshing(true);
+                        }
+                    })
+                    .doOnUnsubscribe(() -> {
+                        refreshScanLayout.setRefreshing(false);
+                        if (deviceAdapter.getItemCount() == 0) {
+                            scanEmptySnackBar.show();
+                        }
+                    })
+                    .map(beacon1 -> new DeviceItem(beacon1.device, beacon1.rssi))
+                    .subscribe(deviceAdapter::addDevice);
         }
-        beaconSubscription = reactiveBeacons.observe()
-                .take(5, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnUnsubscribe(() -> refreshScanLayout.setRefreshing(false))
-                .map(beacon1 -> new DeviceItem(beacon1.device, beacon1.rssi))
-                .subscribe(deviceAdapter::addDevice);
     }
 
 
     private void stopScan() {
-        refreshScanLayout.setRefreshing(false);
+        if (beaconSubscription != null && !beaconSubscription.isUnsubscribed()) {
+            beaconSubscription.unsubscribe();
+        }
+        deviceAdapter.clear();
     }
 
 

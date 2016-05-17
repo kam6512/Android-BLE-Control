@@ -49,6 +49,9 @@
     <string name="device.name.format" formatted="false">%s (%s)</string>
 
 
+    <string name="scan_none_snack_title">스캔된 기기가 없습니다</string>
+    <string name="scan_none_snack_label">재스캔</string>
+
     <string name="control.none">NONE</string>
     <string name="control.fail">Fail!</string>
     <string name="control.empty">EMPTY VALUE</string>
@@ -60,11 +63,11 @@
 
     <string name="control.format.properties" formatted="false">0x%04X - \u0020</string>
 
-    <string name="control.properties.read" >READ \u0020</string>
-    <string name="control.properties.write" >WRITE \u0020</string>
-    <string name="control.properties.notify" >NOTIFY \u0020</string>
-    <string name="control.properties.indicate" >INDICATE \u0020</string>
-    <string name="control.properties.wnr" >WRITE_NO_RESPONSE \u0020</string>
+    <string name="control.properties.read">READ \u0020</string>
+    <string name="control.properties.write">WRITE \u0020</string>
+    <string name="control.properties.notify">NOTIFY \u0020</string>
+    <string name="control.properties.indicate">INDICATE \u0020</string>
+    <string name="control.properties.wnr">WRITE_NO_RESPONSE \u0020</string>
 
 
 </resources>
