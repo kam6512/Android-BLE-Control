@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.rainbow.kam.android_ble_control.dagger.scope.PerActivity;
 import com.rainbow.kam.android_ble_control.dagger.module.ActivityModule;
-import com.rainbow.kam.android_ble_control.ui.activity.DeviceProfileActivity;
+import com.rainbow.kam.android_ble_control.ui.activity.ProfileActivity;
 import com.rainbow.kam.android_ble_control.ui.activity.ScanActivity;
 
 import dagger.Component;
@@ -19,5 +19,5 @@ public interface ActivityComponent {
 
     void inject(ScanActivity activity);
 
-    void inject(DeviceProfileActivity activity);
+    void inject(ProfileActivity activity);
 }

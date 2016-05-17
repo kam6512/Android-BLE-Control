@@ -91,7 +91,7 @@ public class ScanActivity extends BaseActivity implements
     @Override public void onDeviceSelect(DeviceItem device) {
         Observable.just(this)
                 .map(activity -> {
-                    Intent commandIntent = new Intent(activity, DeviceProfileActivity_.class);
+                    Intent commandIntent = new Intent(activity, ProfileActivity_.class);
                     commandIntent.putExtra(BuildConfig.KEY_DEVICE_NAME, device.getName());
                     commandIntent.putExtra(BuildConfig.KEY_DEVICE_ADDRESS, device.getAddress());
                     return commandIntent;

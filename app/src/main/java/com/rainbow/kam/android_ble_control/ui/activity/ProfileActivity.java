@@ -46,7 +46,7 @@ import javax.inject.Inject;
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.a_profile)
-public class DeviceProfileActivity extends BaseActivity implements
+public class ProfileActivity extends BaseActivity implements
         OnGattItemClickListener,
         OnControlListener,
         GattCustomCallbacks {
@@ -248,13 +248,13 @@ public class DeviceProfileActivity extends BaseActivity implements
 
     @UiThread @Override
     public void onReadSuccess(final BluetoothGattCharacteristic ch) {
-        controlView.newValueForCharacteristic(ch);
+        controlView.showNewValue(ch);
     }
 
 
     @UiThread @Override
     public void onDeviceNotify(final BluetoothGattCharacteristic ch) {
-        controlView.newValueForCharacteristic(ch);
+        controlView.showNewValue(ch);
     }
 
 
@@ -277,7 +277,7 @@ public class DeviceProfileActivity extends BaseActivity implements
     @UiThread @Override public void onError(GattException e) {
         showMessage(e.getMessage());
         if (e instanceof ReadCharacteristicException) {
-            controlView.setFail();
+            controlView.showFail();
         }
     }
 
@@ -296,7 +296,7 @@ public class DeviceProfileActivity extends BaseActivity implements
 
 
     @UiThread @Override public void onControlReady() {
-        controlView.init(deviceName, deviceAddress, controlCharacteristic);
+        controlView.initValue(deviceName, deviceAddress, controlCharacteristic);
     }
 
 
