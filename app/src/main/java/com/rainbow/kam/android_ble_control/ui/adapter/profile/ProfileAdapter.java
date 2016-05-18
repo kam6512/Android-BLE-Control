@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.google.common.collect.Lists;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.ui.adapter.ViewHolder;
-import com.rainbow.kam.ble_gatt_manager.GattAttributes;
+import com.rainbow.kam.ble_gatt_manager.*;
 
 import java.util.List;
 
@@ -65,7 +65,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ViewHolder> {
         int type = getItemViewType(position);
         if (type == TYPE_SERVICE) {
             holder.bindViews(bluetoothGattServices.get(position));
-
         } else if (type == TYPE_CHARACTERISTIC) {
             holder.bindViews(bluetoothGattCharacteristics.get(position));
         }
@@ -117,11 +116,16 @@ public class ProfileAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
 
+    private String splitUUID(String uuid) {
+        return uuidLabel + uuid.replace(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG, "\b").replace("0000", "\b");
+    }
+
+
     class ServiceViewHolder extends ViewHolder {
 
-        @Bind(R.id.profile_parent_list_item_service_name) TextView serviceTitle;
-        @Bind(R.id.profile_parent_list_item_service_UUID) TextView serviceUuid;
-        @Bind(R.id.profile_parent_list_item_service_type) TextView serviceType;
+        @Bind(R.id.profile_service_name) TextView serviceTitle;
+        @Bind(R.id.profile_service_UUID) TextView serviceUuid;
+        @Bind(R.id.profile_service_type) TextView serviceType;
 
 
         public ServiceViewHolder(final View itemView) {
@@ -135,22 +139,21 @@ public class ProfileAdapter extends RecyclerView.Adapter<ViewHolder> {
             String name = GattAttributes.resolveServiceName(uuid);
             String type = GattAttributes.resolveServiceType(bluetoothGattService.getType());
 
-            uuid = uuidLabel + uuid.substring(4, 8);
             serviceTitle.setText(name);
-            serviceUuid.setText(uuid);
+            serviceUuid.setText(splitUUID(uuid));
             serviceType.setText(type);
         }
 
 
-        @OnClick(R.id.profile_parent_list_item_service) void onServiceSelect() {
+        @OnClick(R.id.profile_item_service) void onServiceSelect() {
             onGattItemClickListener.onServiceClickListener(bluetoothGattServices.get(getLayoutPosition()));
         }
     }
 
     class CharacteristicViewHolder extends ViewHolder {
 
-        @Bind(R.id.profile_child_list_item_characteristic_name) TextView characteristicTitle;
-        @Bind(R.id.profile_child_list_item_characteristic_UUID) TextView characteristicUuid;
+        @Bind(R.id.profile_characteristic_name) TextView characteristicTitle;
+        @Bind(R.id.profile_characteristic_UUID) TextView characteristicUuid;
 
 
         public CharacteristicViewHolder(final View itemView) {
@@ -162,15 +165,13 @@ public class ProfileAdapter extends RecyclerView.Adapter<ViewHolder> {
         public void bindViews(final BluetoothGattCharacteristic bluetoothGattCharacteristic) {
             String uuid = bluetoothGattCharacteristic.getUuid().toString();
             String name = GattAttributes.resolveCharacteristicName(uuid);
-            uuid = uuidLabel + uuid.substring(4, 8);
 
             characteristicTitle.setText(name);
-            characteristicUuid.setText(uuid);
-
+            characteristicUuid.setText(splitUUID(uuid));
         }
 
 
-        @OnClick(R.id.profile_child_list_item_characteristic)
+        @OnClick(R.id.profile_item_characteristic)
         void onCharacteristicSelect() {
             onGattItemClickListener.onCharacteristicClickListener(bluetoothGattCharacteristics.get(getLayoutPosition()));
         }
