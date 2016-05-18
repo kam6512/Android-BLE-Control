@@ -25,6 +25,7 @@ import com.rainbow.kam.android_ble_control.ui.view.ControlView;
 import com.rainbow.kam.android_ble_control.ui.view.OnControlListener;
 import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
 import com.rainbow.kam.ble_gatt_manager.exceptions.GattException;
+import com.rainbow.kam.ble_gatt_manager.exceptions.details.ConnectedFailException;
 import com.rainbow.kam.ble_gatt_manager.exceptions.details.ReadCharacteristicException;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattManager;
@@ -37,6 +38,8 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -113,13 +116,8 @@ public class ProfileActivity extends BaseActivity implements
 
 
     private void connectDevice() {
-        try {
-            gattManager.connect(deviceAddress);
-            deviceStateTextView.setText(connectingLabel);
-        } catch (Exception e) {
-            showMessage(e.getMessage());
-            showNoneValue();
-        }
+        gattManager.connect(deviceAddress);
+        deviceStateTextView.setText(connectingLabel);
     }
 
 
@@ -275,9 +273,14 @@ public class ProfileActivity extends BaseActivity implements
 
 
     @UiThread @Override public void onError(GattException e) {
-        showMessage(e.getMessage());
-        if (e instanceof ReadCharacteristicException) {
+        try {
+            throw e;
+        } catch (ReadCharacteristicException readCharacteristicException) {
             controlView.showFail();
+        } catch (ConnectedFailException connectedFailException) {
+            showNoneValue();
+        } finally {
+            showMessage(e != null ? e.getMessage() : "Blank Message");
         }
     }
 
@@ -311,7 +314,7 @@ public class ProfileActivity extends BaseActivity implements
     }
 
 
-    @Background @Override public void setWriteValue(byte[] data) {
+    @Background @Override public void setWriteValue(List<Byte> data) {
         gattManager.writeValue(controlCharacteristic, data);
     }
 }
