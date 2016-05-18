@@ -39,8 +39,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 
@@ -314,7 +312,7 @@ public class ProfileActivity extends BaseActivity implements
     }
 
 
-    @Background @Override public void setWriteValue(List<Byte> data) {
+    @Override public void setWriteValue(byte[] data) {
         gattManager.writeValue(controlCharacteristic, data);
     }
 }
