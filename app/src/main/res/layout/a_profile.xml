@@ -82,6 +82,15 @@
                         style="@style/DeviceLabel.DeviceText"/>
                 </TableRow>
             </TableLayout>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/characteristic_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:padding="10dp"
+                android:src="@drawable/ic_filter_list"
+                android:tint="@android:color/white"/>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
