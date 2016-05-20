@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.google.common.collect.Lists;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.ui.adapter.ViewHolder;
-import com.rainbow.kam.ble_gatt_manager.*;
+import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 
 import java.util.List;
 
@@ -117,7 +117,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ViewHolder> {
 
 
     private String splitUUID(String uuid) {
-        return uuidLabel + uuid.replace(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG, "\b").replace("0000", "\b");
+        return uuidLabel + uuid.trim().toUpperCase().replace(GattAttributes.UUID_LABEL, "").replace("0000", "");
     }
 
 
