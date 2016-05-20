@@ -15,7 +15,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.rainbow.kam.android_ble_control.R;
-import com.rainbow.kam.ble_gatt_manager.GattAttributes;
+import com.rainbow.kam.ble_gatt_manager.*;
+import com.rainbow.kam.ble_gatt_manager.util.*;
 
 import org.androidannotations.annotations.CheckedChange;
 import org.androidannotations.annotations.Click;
@@ -42,7 +43,6 @@ public class ControlView extends NestedScrollView {
     private String name;
     private String address;
     private String uuid;
-    private int properties;
 
     private String hexValue;
     private String strValue;
@@ -81,13 +81,6 @@ public class ControlView extends NestedScrollView {
     @StringRes(R.string.control_format_string) String stringFormat;
 
     @StringRes(R.string.profile_timestamp) String timeStamp;
-    @StringRes(R.string.control_format_properties) String propertiesFormat;
-
-    @StringRes(R.string.control_properties_read) String propertiesRead;
-    @StringRes(R.string.control_properties_write) String propertiesWrite;
-    @StringRes(R.string.control_properties_notify) String propertiesNotify;
-    @StringRes(R.string.control_properties_indicate) String propertiesIndicate;
-    @StringRes(R.string.control_properties_wnr) String propertiesWriteNoResponse;
 
 
     private final OnControlListener onControlListener;
@@ -133,7 +126,6 @@ public class ControlView extends NestedScrollView {
             lastUpdateTime = none;
             notificationEnabled = false;
             uuid = bluetoothGattCharacteristic.getUuid().toString();
-            properties = bluetoothGattCharacteristic.getProperties();
         }
         if (getVisibility() == VISIBLE) {
             initCharacteristicInfoView();
@@ -164,54 +156,27 @@ public class ControlView extends NestedScrollView {
 
 
     @UiThread void initPropsView() {
-        StringBuilder propertiesString = new StringBuilder();
+        charProperties.setText(GattAttributes.getAvailableProperties(bluetoothGattCharacteristic));
 
-        propertiesString.append(String.format(propertiesFormat, properties));
-
-        if (propertiesEnabled(PROPERTY_READ)) {
-            propertiesString.append(propertiesRead);
-        }
-        if (propertiesEnabled(PROPERTY_WRITE)) {
-            propertiesString.append(propertiesWrite);
-        }
-        if (propertiesEnabled(PROPERTY_NOTIFY)) {
-            propertiesString.append(propertiesNotify);
-        }
-        if (propertiesEnabled(PROPERTY_INDICATE)) {
-            propertiesString.append(propertiesIndicate);
-        }
-        if (propertiesEnabled(PROPERTY_WRITE_NO_RESPONSE)) {
-            propertiesString.append(propertiesWriteNoResponse);
-        }
-        charProperties.setText(propertiesString.toString());
-
-        notificationBtn.setEnabled(propertiesEnabled(PROPERTY_NOTIFY));
+        notificationBtn.setEnabled(GattAttributes.isPropsAvailable(bluetoothGattCharacteristic, PROPERTY_NOTIFY));
         notificationBtn.setChecked(notificationEnabled);
-        readBtn.setEnabled(propertiesEnabled(PROPERTY_READ));
-        writeBtn.setEnabled(propertiesEnabled(PROPERTY_WRITE | PROPERTY_WRITE_NO_RESPONSE));
+        readBtn.setEnabled(GattAttributes.isPropsAvailable(bluetoothGattCharacteristic, PROPERTY_READ));
+        writeBtn.setEnabled(GattAttributes.isPropsAvailable(bluetoothGattCharacteristic, PROPERTY_WRITE | PROPERTY_WRITE_NO_RESPONSE));
+
         charHexValue.setEnabled(writeBtn.isEnabled());
-    }
-
-
-    private boolean propertiesEnabled(int props) {
-        return (properties & props) != 0;
     }
 
 
     @UiThread
     public void showNewValue(final BluetoothGattCharacteristic bluetoothGattCharacteristic) {
 
-        byte[] rawValue = bluetoothGattCharacteristic.getValue();
-
         setTimeStamp();
 
-        if (rawValue != null && rawValue.length > 0) {
-            hexValue = uuidFormat + getValue(rawValue, hexFormat);
-            strValue = getValue(rawValue, stringFormat);
-        } else {
-            hexValue = none;
-            strValue = none;
-        }
+        CharacteristicUtils.getStringValue(bluetoothGattCharacteristic, hexFormat)
+                .subscribe(s -> hexValue = uuidFormat + s, throwable -> hexValue = none);
+
+        CharacteristicUtils.getStringValue(bluetoothGattCharacteristic, stringFormat)
+                .subscribe(s -> strValue = s, throwable -> strValue = none);
 
         bindView();
     }
@@ -219,15 +184,6 @@ public class ControlView extends NestedScrollView {
 
     private void setTimeStamp() {
         lastUpdateTime = new SimpleDateFormat(timeStamp, Locale.getDefault()).format(new Date().getTime());
-    }
-
-
-    private String getValue(byte[] rawValue, String format) {
-        final StringBuilder stringBuilder = new StringBuilder(rawValue.length);
-        for (byte byteChar : rawValue) {
-            stringBuilder.append(String.format(format, byteChar));
-        }
-        return stringBuilder.toString();
     }
 
 
