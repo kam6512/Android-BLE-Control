@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
 import com.rainbow.kam.android_ble_control.BuildConfig;
 import com.rainbow.kam.android_ble_control.R;
 import com.rainbow.kam.android_ble_control.dagger.component.ActivityComponent;
@@ -23,21 +24,26 @@ import com.rainbow.kam.android_ble_control.ui.adapter.profile.OnGattItemClickLis
 import com.rainbow.kam.android_ble_control.ui.adapter.profile.ProfileAdapter;
 import com.rainbow.kam.android_ble_control.ui.view.ControlView;
 import com.rainbow.kam.android_ble_control.ui.view.OnControlListener;
-import com.rainbow.kam.ble_gatt_manager.BluetoothHelper;
+import com.rainbow.kam.android_ble_control.ui.view.PropertyDialog;
+import com.rainbow.kam.ble_gatt_manager.GattAttributes;
 import com.rainbow.kam.ble_gatt_manager.exceptions.GattException;
 import com.rainbow.kam.ble_gatt_manager.exceptions.details.ConnectedFailException;
 import com.rainbow.kam.ble_gatt_manager.exceptions.details.ReadCharacteristicException;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattCustomCallbacks;
 import com.rainbow.kam.ble_gatt_manager.legacy.GattManager;
+import com.rainbow.kam.ble_gatt_manager.util.BluetoothHelper;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -151,6 +157,21 @@ public class ProfileActivity extends BaseActivity implements
 
     @OptionsItem(android.R.id.home) void onBackMenuItemSelected() {
         finish();
+    }
+
+
+    @Click(R.id.characteristic_filter) void filtering() {
+        List<BluetoothGattCharacteristic> filteredCharacteristicList = Lists.newArrayList();
+        PropertyDialog.showPropertyDialog(this, "showPropertyDialog").subscribe(integer -> {
+            for (BluetoothGattService service : gattManager.getGatt().getServices()) {
+                for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
+                    if (GattAttributes.isPropsAvailable(characteristic.getProperties(), integer)) {
+                        filteredCharacteristicList.add(characteristic);
+                    }
+                }
+            }
+        }, throwable -> {
+        }, () -> profileAdapter.setCharacteristicList(filteredCharacteristicList));
     }
 
 

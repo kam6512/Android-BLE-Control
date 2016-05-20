@@ -4,7 +4,8 @@ import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Strings;
-import com.rainbow.kam.ble_gatt_manager.GattAttributes;
+import com.rainbow.kam.android_ble_control.BuildConfig;
+import com.rainbow.kam.ble_gatt_manager.BleDeviceAttribute;
 
 /**
  * Created by kam6512 on 2015-10-14.
@@ -18,13 +19,10 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
     private final int rssi;
 
 
-    private static final String UNKNOWN = GattAttributes.UNKNOWN;
-
-
     public DeviceItem(BluetoothDevice bluetoothDevice, int rssi) {
         String name = bluetoothDevice.getName();
         if (Strings.isNullOrEmpty(name)) {
-            this.name = UNKNOWN;
+            this.name = BuildConfig.UNKNOWN;
         } else {
             this.name = name;
         }
@@ -46,12 +44,12 @@ public class DeviceItem implements Comparable<DeviceItem> { //카드 뷰 틀
 
 
     public final String getBondState() {
-        return GattAttributes.getBond(bondState);
+        return BleDeviceAttribute.getBond(bondState);
     }
 
 
     public final String getType() {
-        return GattAttributes.getType(type);
+        return BleDeviceAttribute.getType(type);
     }
 
 
